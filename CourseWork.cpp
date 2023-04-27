@@ -1,4 +1,8 @@
-﻿#include <iostream>
+﻿/*
+Основной файл курсовой работы
+*/
+
+#include <iostream>
 #include <Windows.h>
 #include <conio.h>
 
@@ -10,20 +14,7 @@ using namespace std;
 // переменная, в которую записывается, что делать (из главного меню)
 unsigned short action;
 
-int checkForValue(int min, int value, int max) {
-	if (min <= value && value <= max) {
-		return 1;
-	}
-	else {
-		// звук ошибки windows
-		cout << "\a";
-		cout << "Введено неверное значение (" << value << ")! Введите число от " << min << " до " << max << "\n";
-		cout << "Для продолжения нажмите любую клавишу...";
-		_getch();
-		system("cls");
-		return 0;
-	}
-}
+
 
 
 void mainMenu() {
@@ -62,7 +53,7 @@ int main() {
 		switch (action)
 		{
 		case 1:
-			cout << "Case 1";
+			student.writeStudent();
 			break;
 		case 2:
 			student.printStudent();
