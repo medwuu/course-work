@@ -130,7 +130,6 @@
     <ClCompile Include="CourseWork.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="File.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Student.h" />
   </ItemGroup>

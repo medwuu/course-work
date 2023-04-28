@@ -12,7 +12,7 @@
 using namespace std;
 
 // переменная, в которую записывается, что делать (из главного меню)
-unsigned short action;
+int action;
 
 
 
@@ -46,6 +46,7 @@ int main() {
 	setlocale(LC_ALL, "Russian");
 	SetConsoleCP(1251); SetConsoleOutputCP(1251);
 
+
 	Student student;
 
 	while (true) {
@@ -56,7 +57,7 @@ int main() {
 			student.writeStudent();
 			break;
 		case 2:
-			student.printStudent();
+			student.readFromFile();
 			break;
 		case 3:
 			cout << "Case 3";
