@@ -7,9 +7,9 @@
 #include <fstream>
 #include <string>
 
-#include "Menu.h"
+#include "Student.cpp"
 
-#define line cout << "+"; for (int _ = 0; _ < 100; _++) {cout << "-";} cout << "+\n";
+#define line cout << "+"; for (int _ = 0; _ < 100; _++) { if (_ == 35) {cout << "+";} else {cout << "-";}} cout << "+\n";
 
 using namespace std;
 
@@ -73,13 +73,9 @@ private:
 	Group group;
 	StudentBookNumber studentbook_number;
 	Sex sex;
-	//Session session;
+	// TODO
+	// Session session;
 public:
-	/*Student(Fio fio_, BirthDate birth_date_, AdmissionYear admission_year_, Faculty faculty_,
-			Department department_, Group group_, StudentBookNumber studentbook_number_, Sex sex_) {
-
-	}*/
-
 	void writeStudent() {
 		int int_temp;
 		string str_temp;
@@ -179,7 +175,7 @@ public:
 		while (letter != 13) {
 			letter = _getch();
 			// проверка на соответствие введённого символа большим или маленькими буквами английского, а затем русского алфавита
-			if ((65 <= letter && letter <= 90) || (97 <= letter && letter <= 122) || (192 <= letter && letter <= 255)) {
+			if ((65 <= letter && letter <= 90) || (97 <= letter && letter <= 122) || (-200 <= letter && letter <= -1)) {
 				output += letter;
 				system("cls");
 			}
@@ -220,13 +216,13 @@ public:
 	// выводим данные о студенте
 	void printStudent() {
 		line
-			cout.width(30);
-		cout << left << "|ФИО: ";
+		cout.width(30);
+		cout << left << "|\t1. ФИО: ";
 		cout << "|\t" << fio.surname << " " << fio.name << " " << fio.patronymic;
-		cout.width(71 - fio.surname.length() - fio.name.length() - fio.patronymic.length() - 2);
+		cout.width(63 - fio.surname.length() - fio.name.length() - fio.patronymic.length() - 2);
 		cout << right << "|\n";
 		cout.width(30);
-		cout << left << "|Дата рождения: ";
+		cout << left << "|\t2. Дата рождения: ";
 		cout << "|\t";
 		if (birth_date.day < 10) {
 			cout << 0;
@@ -236,47 +232,46 @@ public:
 			cout << 0;
 		}
 		cout << birth_date.month << "." << birth_date.year;
-		cout.width(71 - 10);
+		cout.width(63 - 10);
 		cout << right << "|\n";
 		cout.width(30);
-		cout << left << "|Год поступления: ";
+		cout << left << "|\t3. Год поступления: ";
 		cout << "|\t" << admission_year.admission_year;
-		cout.width(71 - 4);
+		cout.width(63 - 4);
 		cout << right << "|\n";
 		cout.width(30);
-		cout << left << "|Факультет (институт): ";
+		cout << left << "|\t4. Факультет (институт): ";
 		cout << "|\t" << faculty.faculty;
-		cout.width(71 - faculty.faculty.length());
+		cout.width(63 - faculty.faculty.length());
 		cout << right << "|\n";
 		cout.width(30);
-		cout << left << "|Кафедра: ";
+		cout << left << "|\t5. Кафедра: ";
 		cout << "|\t" << department.department;
-		cout.width(71 - department.department.length());
+		cout.width(63 - department.department.length());
 		cout << right << "|\n";
 		cout.width(30);
-		cout << left << "|Группа: ";
+		cout << left << "|\t6. Группа: ";
 		cout << "|\t" << group.group;
-		cout.width(71 - group.group.length());
+		cout.width(63 - group.group.length());
 		cout << right << "|\n";
 		cout.width(30);
-		cout << left << "|Номер зачётной книжки: ";
+		cout << left << "|\t7. Номер зачётной книжки: ";
 		cout << "|\t" << studentbook_number.student_book_number;
-		cout.width(71 - studentbook_number.student_book_number.length());
+		cout.width(63 - studentbook_number.student_book_number.length());
 		cout << right << "|\n";
 		cout.width(30);
-		cout << left << "|Пол: ";
+		cout << left << "|\t8. Пол: ";
 		cout << "|\t" << sex.sex;
-		cout.width(71 - sex.sex.length());
+		cout.width(63 - sex.sex.length());
 		cout << right << "|\n";
 		line
-
 	}
 
 
 
 
 	string end_record = "=== END ===";
-	// костылии
+
 	int writeIntoFile(string surname_, string name_, string patronymic_, int birth_date_day_,
 		int birth_date_month_, int birth_date_year_, int admission_year_,
 		string faculty_, string department_, string group_, string studentbook_number_, string sex_) {
@@ -300,18 +295,18 @@ public:
 		return 0;
 	}
 
-	int readFromFile() {
+	int readFromFile(int requirement_number) {
+		int student_number = 0;
 		string buffer;
 		int f_line = 0;
 		ifstream file("StudentsData.txt", ios_base::out);
-		// FIXME: выводит "Файл не открыт", но данные читает
 		if (!file.is_open()) {
-			//cout << "Файл не открыт!\n";
+			cout << "Файл не открыт!\n";
 			return 404;
 		}
 		else {
 			while (getline(file, buffer, '\n')) {
-				if (buffer != end_record) {
+				if (student_number == requirement_number && buffer != end_record) {
 					switch (f_line % 12) {
 					case 0:
 						fio.surname = buffer;
@@ -355,16 +350,13 @@ public:
 					}
 					f_line++;
 				}
-				else {
-					printStudent();
-					f_line = 0;
+				else if (buffer == end_record) {
+					student_number++;
 				}
 			}
 			file.close();
-			cout << "Для продолжения нажмите любую клавишу...";
-			_getch();
-			system("cls");
 			return 0;
 		}
 	}
+
 };

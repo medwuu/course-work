@@ -20,11 +20,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Menu.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Student.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Student.cpp">
+      <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

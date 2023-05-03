@@ -6,7 +6,7 @@
 #include <Windows.h>
 #include <conio.h>
 
-#include "Menu.h"
+#include "Student.cpp"
 #include "Student.h"
 
 using namespace std;
@@ -46,32 +46,43 @@ int main() {
 	setlocale(LC_ALL, "Russian");
 	SetConsoleCP(1251); SetConsoleOutputCP(1251);
 
+	Student student[100];
+	int student_count = getAmountOfStudents();
 
-	Student student;
+	// инициализируем значения
+	for (int i = 0; i < student_count; i++) {
+		student[i].readFromFile(i);
+	}
 
 	while (true) {
 		mainMenu();
 		switch (action)
 		{
 		case 1:
-			student.writeStudent();
+			student[student_count].writeStudent();
+			student_count++;
 			break;
 		case 2:
-			student.readFromFile();
+			for (int i = 0; i < student_count; i++) {
+				student[i].printStudent();
+			}
+			cout << "Для продолжения нажмите любую клавишу...";
+			_getch();
+			system("cls");
 			break;
 		case 3:
-			cout << "Case 3";
+			cout << "Case 3\n";
 			break;
 		case 4:
-			cout << "Case 4";
+			deleteStudent(student, student_count);
 			break;
 		case 5:
-			cout << "Case 5";
+			cout << "Case 5\n";
 			break;
 		case 6:
 			cout << "Конец работы программы\n\n";
 			return 0;
-			// в идеале, этот блок никогда не должен срабатывать, потому что есть checkForValue()
+		// в идеале, этот блок никогда не должен срабатывать, потому что есть checkForValue()
 		default:
 			cout << "Произошла непредвиденная ошибка";
 			return 404;
