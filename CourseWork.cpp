@@ -74,6 +74,7 @@ int main() {
 			cout << "Case 3\n";
 			break;
 		case 4:
+			// TODO: компилятор ругается, ошибка тут
 			deleteStudent(student, student_count);
 			break;
 		case 5:
