@@ -7,12 +7,16 @@
 #include <fstream>
 #include <string>
 
-#include "Student.cpp"
+#include "Functions.cpp"
+
+
 
 #define line cout << "+"; for (int _ = 0; _ < 100; _++) { if (_ == 35) {cout << "+";} else {cout << "-";}} cout << "+\n";
 
 using namespace std;
 
+// обозначает конец записи в файле
+string end_record = "=== END ===";
 
 // фамилия, имя и отчество
 struct Fio {
@@ -76,6 +80,7 @@ private:
 	// TODO
 	// Session session;
 public:
+	// ввод записи с клавиатуры
 	void writeStudent() {
 		int int_temp;
 		string str_temp;
@@ -169,51 +174,7 @@ public:
 		system("cls");
 	}
 
-	string getAlpha(string whatToEnter) {
-		string output = "";
-		char letter = 0;
-		while (letter != 13) {
-			letter = _getch();
-			// проверка на соответствие введённого символа большим или маленькими буквами английского, а затем русского алфавита
-			if ((65 <= letter && letter <= 90) || (97 <= letter && letter <= 122) || (-200 <= letter && letter <= -1)) {
-				output += letter;
-				system("cls");
-			}
-			// удаление при нажатии backspace
-			else if (letter == 8 && output.length() != 0) {
-				output.pop_back();
-				system("cls");
-			}
-			else {
-				system("cls");
-			}
-			cout << whatToEnter << output;
-		}
-		return output;
-	}
-
-	int getDigit(string whatToEnter) {
-		string output = "";
-		char letter = 0;
-		while (letter != 13) {
-			letter = _getch();
-			if (48 <= letter && letter <= 57) {
-				output += letter;
-				system("cls");
-			}
-			else if (letter == 8 && output.length() != 0) {
-				output.pop_back();
-				system("cls");
-			}
-			else {
-				system("cls");
-			}
-			cout << whatToEnter << output;
-		}
-		return atoi(output.c_str());
-	}
-
-	// выводим данные о студенте
+	// вывод данных о студентах
 	void printStudent() {
 		line
 		cout.width(30);
@@ -267,11 +228,7 @@ public:
 		line
 	}
 
-
-
-
-	string end_record = "=== END ===";
-
+	// запись данных (одной записи) в файл
 	int writeIntoFile(string surname_, string name_, string patronymic_, int birth_date_day_,
 		int birth_date_month_, int birth_date_year_, int admission_year_,
 		string faculty_, string department_, string group_, string studentbook_number_, string sex_) {
@@ -295,6 +252,7 @@ public:
 		return 0;
 	}
 
+	// чтение данных (одной записи) из файла
 	int readFromFile(int requirement_number) {
 		int student_number = 0;
 		string buffer;
@@ -359,4 +317,36 @@ public:
 		}
 	}
 
+	// удаление студента
+	void deleteStudent(Student* student, int student_count) {
+		int number;
+		if (student_count == 0) {
+			cout << "Пока не кого отчислять :(\n";
+		}
+		else {
+			while (true) {
+				cout << "Введите порядковый номер (на рукаве) студента: ";
+				cin >> number;
+				if (checkForValue(1, number, student_count)) {
+					break;
+				}
+			}
+			system("cls");
+			// сдвигаем массив на -1
+			for (number--; number < student_count; number++) {
+				student[number] = student[number + 1];
+			}
+
+			// очищаем файл перед записью всех "сдвинутых" значений
+			ofstream file("StudentsData.txt", ios_base::trunc);
+			file.close();
+			for (int i = 0; i < student_count--; i++) {
+				writeIntoFile(student[i].fio.surname, student[i].fio.name, student[i].fio.patronymic, student[i].birth_date.day, student[i].birth_date.month, student[i].birth_date.year, student[i].admission_year.admission_year, student[i].faculty.faculty, student[i].department.department, student[i].group.group, student[i].studentbook_number.student_book_number, student[i].sex.sex);
+			}
+			cout << "Данные успешно обновлены!\n";
+		}
+		cout << "Для продолжения нажмите любую клавишу...";
+		_getch();
+		system("cls");
+	}
 };
