@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <conio.h>
 #include "Windows.h"
 
 using namespace std;
@@ -38,23 +39,4 @@ int getAmountOfStudents() {
 		}
 	}
 	return count;
-}
-
-
-void deleteStudent(Student* student, int student_count) {
-	int number;
-	if (student_count == 0) {
-		cout << "Пока не кого отчислять :(\n";
-	}
-	while (true) {
-		cout << "Введите порядковый номер (на рукаве) студента: ";
-		cin >> number;
-		if (checkForValue(1, number, student_count)) {
-			break;
-		}
-	}
-	// сдвигаем массив на -1
-	for (number; number < student_count; number++) {
-		student[number] = student[number + 1];
-	}
 }

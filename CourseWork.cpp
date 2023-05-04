@@ -6,7 +6,9 @@
 #include <Windows.h>
 #include <conio.h>
 
-#include "Student.cpp"
+// TODO: перенести case 4 в отдельную функцию и убрать это недоразумение
+#include <fstream>
+
 #include "Student.h"
 
 using namespace std;
@@ -45,7 +47,6 @@ void mainMenu() {
 int main() {
 	setlocale(LC_ALL, "Russian");
 	SetConsoleCP(1251); SetConsoleOutputCP(1251);
-
 	Student student[100];
 	int student_count = getAmountOfStudents();
 
@@ -74,8 +75,30 @@ int main() {
 			cout << "Case 3\n";
 			break;
 		case 4:
-			// TODO: компилятор ругается, ошибка тут
-			deleteStudent(student, student_count);
+			// TODO: вынести в отдельную функцию
+			int number;
+			if (student_count == 0) {
+				cout << "Пока не кого отчислять :(\n";
+			}
+			while (true) {
+				cout << "Введите порядковый номер (на рукаве) студента: ";
+				cin >> number;
+				if (checkForValue(1, number, student_count)) {
+					// уменьшеем на 1, потому что индексы идут с нуля
+					number--;
+					break;
+				}
+			}
+			// сдвигаем массив на -1
+			for (number; number < student_count; number++) {
+				student[number] = student[number + 1];
+			}
+			student_count--;
+
+			// TODO: заносим изменения в файл
+			cout << "Данные успешно обновлены!\n";
+			_getch();
+			system("cls");
 			break;
 		case 5:
 			cout << "Case 5\n";
