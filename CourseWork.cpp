@@ -47,8 +47,7 @@ int main() {
 
 	while (true) {
 		mainMenu();
-		switch (action)
-		{
+		switch (action)	{
 		case 1:
 			student[student_count].writeStudent();
 			student_count++;
@@ -62,7 +61,7 @@ int main() {
 			system("cls");
 			break;
 		case 3:
-			cout << "Case 3\n";
+			student->editStudent(student, student_count);
 			break;
 		case 4:
 			student->deleteStudent(student, student_count);
