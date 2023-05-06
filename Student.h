@@ -47,8 +47,13 @@ struct Sex {
 
 // сессия
 struct Session {
-	// оценки
+	// название предмета (9 сессий по 10 предметов в каждой)
+	string subject[9][10];
+	// оценки (9 сессий по 10 предметов в каждой)
 	int mark[9][10];
+	// проверка, пустое ли значение (9 сессий по 10 предметов в каждой)
+	// true – пусто, false – нет
+	bool is_empty[9][10];
 };
 
 
@@ -63,8 +68,7 @@ private:
 	Group group;
 	StudentBookNumber studentbook_number;
 	Sex sex;
-	// TODO
-	// Session session;
+	Session session;
 public:
 	void getSurname();
 	void getName();
@@ -76,12 +80,13 @@ public:
 	void getGroup();
 	void getStudentbookNumber();
 	void getSex();
+	int getEmptySessionNumber(int session_num);
+	void getSession();
 
 	void writeStudent();
 	void printStudent();
-	int writeIntoFile(string surname_, string name_, string patronymic_, int birth_date_day_,
-		int birth_date_month_, int birth_date_year_, int admission_year_,
-		string faculty_, string department_, string group_, string studentbook_number_, string sex_);
+	int writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admission_year_, Faculty faculty_,
+		Department department_, Group group_, StudentBookNumber studentbook_number_, Sex sex_, Session session_);
 	int readFromFile(int required_number);
 	void editStudent(Student* student, int student_count);
 	void deleteStudent(Student* student, int student_count);

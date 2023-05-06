@@ -150,6 +150,70 @@ void Student::getSex() {
 	}
 }
 
+int Student::getEmptySessionNumber(int session_num) {
+	for (int i = 0; i < 10; i++) {
+		if (session.is_empty[session_num][i]) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+void Student::getSession() {
+	int session_num = 0, out_mark;
+	string out_subject;
+	// цикл для 
+	while (true) {
+		// ввод номера сессии
+		cout << "Введите номер сессии (число от 1 до 9) или \"0\" чтобы пропустить: ";
+		while (true) {
+			session_num = getDigit("Введите номер сессии (число от 1 до 9) или \"0\" чтобы пропустить: ");
+			cout << "\n";
+			if (checkForValue(0, session_num, 9)) {
+				break;
+			}
+		}
+		// while с условием не получался :с
+		if (session_num == 0) { break; }
+		// потому что индексы
+		session_num--;
+		system("cls");
+		// ввод названия предмета
+		cout << "Введите название предмета: ";
+		cin >> out_subject;
+		system("cls");
+		// ввод оценки или зачёт/незачёт
+		cout << "Теперь введите оценку для предмета.\n" <<
+			"0-незачёт\n" <<
+			"1-зачёт\n" <<
+			"2-неудовлетворительно\n" <<
+			"3-удовлетворительно\n" <<
+			"4-хорошо\n" <<
+			"5-отлично\n\n" <<
+			"Ваш выбор: ";
+		while (true) {
+			out_mark = getDigit("Теперь введите оценку для предмета.\n0-незачёт\n1-зачёт\n2-неудовлетворительно\n3-удовлетворительно\n4-хорошо\n5-отлично\n\nВаш выбор: ");
+			cout << "\n";
+			if (checkForValue(0, out_mark, 5)) {
+				break;
+			}
+		}
+		cout << "\n";
+		// проверка на то, какой предмет будет по номеру
+		int subject_num = getEmptySessionNumber(session_num);
+		if (subject_num == -1) {
+			cout << "В сессии " << session_num << " уже нет доступных мест для добавления";
+			break;
+		}
+		else {
+			session.subject[session_num][subject_num] = out_subject;
+			session.mark[session_num][subject_num] = out_mark;
+			session.is_empty[session_num][subject_num] = false;
+			cout << "Сессия успешно добавлена!\n";
+		}
+	}
+}
+
 
 // ввод записи с клавиатуры
 void Student::writeStudent() {
@@ -163,9 +227,10 @@ void Student::writeStudent() {
 	getGroup();
 	getStudentbookNumber();
 	getSex();
-	writeIntoFile(fio.surname, fio.name, fio.patronymic, birth_date.day, birth_date.month, birth_date.year, admission_year.admission_year, faculty.faculty, department.department, group.group, studentbook_number.student_book_number, sex.sex);
+	getSession();
+	writeIntoFile(fio, birth_date, admission_year, faculty, department, group, studentbook_number, sex, session);
 	cout << "Данные успешно записаны в файл \"StudentsData.txt\"\n";
-	cout << "Для продолжения нажмите любую клавишу...";
+	cout << "Для продолжения нажмите любую клавишу. . .";
 	system("pause");
 	system("cls");
 }
@@ -227,9 +292,9 @@ void Student::printStudent() {
 
 
 // запись данных (одной записи) в файл
-int Student::writeIntoFile(string surname_, string name_, string patronymic_, int birth_date_day_,
-	int birth_date_month_, int birth_date_year_, int admission_year_,
-	string faculty_, string department_, string group_, string studentbook_number_, string sex_) {
+int Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admission_year_, Faculty faculty_,
+						   Department department_, Group group_, StudentBookNumber studentbook_number_,
+						   Sex sex_, Session session_) {
 	ofstream file("StudentsData.txt", ios_base::app);
 	// TODO: обрабатывать эту ошибку
 	if (!file.is_open()) {
@@ -237,14 +302,26 @@ int Student::writeIntoFile(string surname_, string name_, string patronymic_, in
 		system("pause");
 		return 404;
 	}
-	file << surname_ << "\n" << name_ << "\n" << patronymic_ << "\n";
-	file << birth_date_day_ << "\n" << birth_date_month_ << "\n" << birth_date_year_ << "\n";
-	file << admission_year_ << "\n";
-	file << faculty_ << "\n";
-	file << department_ << "\n";
-	file << group_ << "\n";
-	file << studentbook_number_ << "\n";
-	file << sex_ << "\n";
+	file << fio_.surname << "\n" << fio_.name << "\n" << fio_.patronymic << "\n";
+	file << birth_date_.day << "\n" << birth_date_.month << "\n" << birth_date_.year << "\n";
+	file << admission_year_.admission_year << "\n";
+	file << faculty_.faculty << "\n";
+	file << department_.department << "\n";
+	file << group_.group << "\n";
+	file << studentbook_number_.student_book_number << "\n";
+	file << sex_.sex << "\n";
+	// выглядит сложно, но этот мега-цикл проходит по всем сессиям
+	for (int session_num = 0; session_num < 9; session_num++) {
+		// тут определятся, есть ли вообще в сессии записи
+		int subject_count = getEmptySessionNumber(session_num);
+		if (subject_count) {
+			file << session_num << "\n";
+			// ну и наконец, проходимся в непустой(!) сессии по непустым(!) записям и записываем в файл
+			for (int i = 0; i < subject_count; i++) {
+				file << session_.is_empty[session_num][i] << ":" << session_.subject[session_num][i] << ":" << session_.mark[session_num][i] << "\n";
+			}
+		}
+	}
 	file << end_record << "\n";
 	file.close();
 	return 0;
@@ -342,7 +419,7 @@ void Student::deleteStudent(Student* student, int student_count) {
 		ofstream file("StudentsData.txt", ios_base::trunc);
 		file.close();
 		for (int i = 0; i < student_count; i++) {
-			writeIntoFile(student[i].fio.surname, student[i].fio.name, student[i].fio.patronymic, student[i].birth_date.day, student[i].birth_date.month, student[i].birth_date.year, student[i].admission_year.admission_year, student[i].faculty.faculty, student[i].department.department, student[i].group.group, student[i].studentbook_number.student_book_number, student[i].sex.sex);
+			writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
 		}
 		cout << "Данные успешно обновлены!\n";
 	}
@@ -412,7 +489,7 @@ void Student::editStudent(Student* student, int student_count) {
 	ofstream file("StudentsData.txt", ios_base::trunc);
 	file.close();
 	for (int i = 0; i < student_count; i++) {
-		writeIntoFile(student[i].fio.surname, student[i].fio.name, student[i].fio.patronymic, student[i].birth_date.day, student[i].birth_date.month, student[i].birth_date.year, student[i].admission_year.admission_year, student[i].faculty.faculty, student[i].department.department, student[i].group.group, student[i].studentbook_number.student_book_number, student[i].sex.sex);
+		writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
 	}
 	cout << "Данные успешно обновлены!\nДля продолжения нажмите любую клавишу...";
 	system("pause");

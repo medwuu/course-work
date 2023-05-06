@@ -49,7 +49,7 @@ int main() {
 		mainMenu();
 		switch (action)	{
 		case 1:
-			student[student_count].writeStudent();
+			student->writeStudent();
 			student_count++;
 			break;
 		case 2:
