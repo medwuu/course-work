@@ -9,7 +9,7 @@
 #include "Functions.h"
 #include "Student.h"
 
-#define line cout << "+"; for (int _ = 0; _ < 100; _++) { if (_ == 35) {cout << "+";} else {cout << "-";}} cout << "+\n";
+#define line cout << "+"; for (int _ = 0; _ < 100; _++) { if (_ == 35) {cout << "+";} else {cout << "-";}} cout << "+\n"
 
 using namespace std;
 
@@ -150,19 +150,9 @@ void Student::getSex() {
 	}
 }
 
-int Student::getEmptySessionNumber(int session_num) {
-	for (int i = 0; i < 10; i++) {
-		if (session.is_empty[session_num][i]) {
-			return i;
-		}
-	}
-	return -1;
-}
-
 void Student::getSession() {
-	int session_num = 0, out_mark;
+	int session_num, out_mark;
 	string out_subject;
-	// цикл для 
 	while (true) {
 		// ввод номера сессии
 		cout << "Введите номер сессии (число от 1 до 9) или \"0\" чтобы пропустить: ";
@@ -183,15 +173,15 @@ void Student::getSession() {
 		cin >> out_subject;
 		system("cls");
 		// ввод оценки или зачёт/незачёт
-		cout << "Теперь введите оценку для предмета.\n" <<
-			"0-незачёт\n" <<
-			"1-зачёт\n" <<
-			"2-неудовлетворительно\n" <<
-			"3-удовлетворительно\n" <<
-			"4-хорошо\n" <<
-			"5-отлично\n\n" <<
-			"Ваш выбор: ";
 		while (true) {
+			cout << "Теперь введите оценку для предмета.\n" <<
+				"0-незачёт\n" <<
+				"1-зачёт\n" <<
+				"2-неудовлетворительно\n" <<
+				"3-удовлетворительно\n" <<
+				"4-хорошо\n" <<
+				"5-отлично\n\n" <<
+				"Ваш выбор: ";
 			out_mark = getDigit("Теперь введите оценку для предмета.\n0-незачёт\n1-зачёт\n2-неудовлетворительно\n3-удовлетворительно\n4-хорошо\n5-отлично\n\nВаш выбор: ");
 			cout << "\n";
 			if (checkForValue(0, out_mark, 5)) {
@@ -209,9 +199,22 @@ void Student::getSession() {
 			session.subject[session_num][subject_num] = out_subject;
 			session.mark[session_num][subject_num] = out_mark;
 			session.is_empty[session_num][subject_num] = false;
-			cout << "Сессия успешно добавлена!\n";
+			cout << "Сессия успешно добавлена!\nДля продолжения нажмите любую клавишу. . .";
+			_getch();
+			system("cls");
 		}
 	}
+}
+
+
+// узнать, сколько предметов записано в одной сессии
+int Student::getEmptySessionNumber(int session_num) {
+	for (int i = 0; i < 10; i++) {
+		if (session.is_empty[session_num][i]) {
+			return i;
+		}
+	}
+	return -1;
 }
 
 
@@ -231,15 +234,15 @@ void Student::writeStudent() {
 	writeIntoFile(fio, birth_date, admission_year, faculty, department, group, studentbook_number, sex, session);
 	cout << "Данные успешно записаны в файл \"StudentsData.txt\"\n";
 	cout << "Для продолжения нажмите любую клавишу. . .";
-	system("pause");
+	_getch();
 	system("cls");
 }
 
 
 // вывод данных о студентах
 void Student::printStudent() {
-	line
-		cout.width(30);
+	line;
+	cout.width(30);
 	cout << left << "|\t1. ФИО: ";
 	cout << "|\t" << fio.surname << " " << fio.name << " " << fio.patronymic;
 	cout.width(63 - fio.surname.length() - fio.name.length() - fio.patronymic.length() - 2);
@@ -287,7 +290,7 @@ void Student::printStudent() {
 	cout << "|\t" << sex.sex;
 	cout.width(63 - sex.sex.length());
 	cout << right << "|\n";
-	line
+	line;
 }
 
 
@@ -299,7 +302,7 @@ int Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admiss
 	// TODO: обрабатывать эту ошибку
 	if (!file.is_open()) {
 		cout << "Файл не открыт!";
-		system("pause");
+		_getch();
 		return 404;
 	}
 	file << fio_.surname << "\n" << fio_.name << "\n" << fio_.patronymic << "\n";
@@ -318,7 +321,7 @@ int Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admiss
 			file << session_num << "\n";
 			// ну и наконец, проходимся в непустой(!) сессии по непустым(!) записям и записываем в файл
 			for (int i = 0; i < subject_count; i++) {
-				file << session_.is_empty[session_num][i] << ":" << session_.subject[session_num][i] << ":" << session_.mark[session_num][i] << "\n";
+				file << session_.subject[session_num][i] << ":" << session_.mark[session_num][i] << "\n";
 			}
 		}
 	}
@@ -330,7 +333,7 @@ int Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admiss
 
 // чтение данных (одной записи) из файла
 int Student::readFromFile(int requirement_number) {
-	int student_number = 0;
+	int student_number = 0, session_num;
 	string buffer;
 	int f_line = 0;
 	ifstream file("StudentsData.txt", ios_base::out);
@@ -341,7 +344,7 @@ int Student::readFromFile(int requirement_number) {
 	else {
 		while (getline(file, buffer, '\n')) {
 			if (student_number == requirement_number && buffer != end_record) {
-				switch (f_line % 12) {
+				switch (f_line) {
 				case 0:
 					fio.surname = buffer;
 					break;
@@ -378,14 +381,29 @@ int Student::readFromFile(int requirement_number) {
 				case 11:
 					sex.sex = buffer;
 					break;
+				// тут был геймплей отладчика на 2000 лет
 				default:
-					cout << "Возникла непредвиденная ошибка!";
+					// означает, что мы попали на строку, которая определяет номер сессии
+					if (buffer.length() == 1) { session_num = atoi(buffer.c_str()); }
+					else {
+						int subject_num = getEmptySessionNumber(session_num);
+						bool was_colon = false;
+						for (char letter : buffer) {
+							if (letter == ':') { was_colon = true; }
+							else if (!was_colon) { session.subject[session_num][subject_num] += letter; }
+							else {
+								session.mark[session_num][subject_num] = int(letter) - int('0');
+								session.is_empty[session_num][subject_num] = false;
+							}
+						}
+					}
 					break;
 				}
 				f_line++;
 			}
 			else if (buffer == end_record) {
 				student_number++;
+				f_line = 0;
 			}
 		}
 		file.close();
@@ -424,7 +442,7 @@ void Student::deleteStudent(Student* student, int student_count) {
 		cout << "Данные успешно обновлены!\n";
 	}
 	cout << "Для продолжения нажмите любую клавишу...";
-	system("pause");
+	_getch();
 	system("cls");
 }
 
@@ -492,6 +510,6 @@ void Student::editStudent(Student* student, int student_count) {
 		writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
 	}
 	cout << "Данные успешно обновлены!\nДля продолжения нажмите любую клавишу...";
-	system("pause");
+	_getch();
 	system("cls");
 }

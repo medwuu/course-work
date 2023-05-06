@@ -49,4 +49,31 @@ four
 four
 four
 женский
+0
+subj:5
+subj2:4
+1
+subj3:2
+5
+subj4:0
+=== END ===
+qwe
+qwe
+qwe
+12
+12
+1912
+1912
+qwe
+qwe
+qwe
+qwe
+мужской
+0
+qwe:5
+wer:4
+2
+ert:3
+5
+vfttt:0
 === END ===

@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <Windows.h>
+#include <conio.h>
 
 #include "Functions.h"
 #include "Student.h"
@@ -57,7 +58,7 @@ int main() {
 				student[i].printStudent();
 			}
 			cout << "Для продолжения нажмите любую клавишу...";
-			system("pause");
+			_getch();
 			system("cls");
 			break;
 		case 3:

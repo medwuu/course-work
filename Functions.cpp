@@ -37,7 +37,7 @@ bool checkForValue(int min, int value, int max) {
 		cout << "\a";
 		cout << "Введено неверное значение (" << value << ")! Введите число от " << min << " до " << max << "\n";
 		cout << "Для продолжения нажмите любую клавишу...";
-		system("pause");
+		_getch();
 		system("cls");
 		return false;
 	}
