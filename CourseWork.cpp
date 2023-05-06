@@ -55,7 +55,7 @@ int main() {
 			break;
 		case 2:
 			for (int i = 0; i < student_count; i++) {
-				student[i].printStudent();
+				student[i].printStudent(i);
 			}
 			cout << "Для продолжения нажмите любую клавишу...";
 			_getch();

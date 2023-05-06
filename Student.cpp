@@ -240,10 +240,11 @@ void Student::writeStudent() {
 
 
 // вывод данных о студентах
-void Student::printStudent() {
+void Student::printStudent(int student_num) {
 	line;
+	cout << left << "| " << student_num + 1;
 	cout.width(30);
-	cout << left << "|\t1. ФИО: ";
+	cout << ".\t1. ФИО: ";
 	cout << "|\t" << fio.surname << " " << fio.name << " " << fio.patronymic;
 	cout.width(63 - fio.surname.length() - fio.name.length() - fio.patronymic.length() - 2);
 	cout << right << "|\n";
@@ -291,6 +292,52 @@ void Student::printStudent() {
 	cout.width(63 - sex.sex.length());
 	cout << right << "|\n";
 	line;
+	cout.width(30);
+	cout << left << "|\t9. Результаты сессий: ";
+	cout << "|\t";
+	for (int session_num = 0; session_num < 9; session_num++) {
+		if (session_num != 0) { cout.width(36); cout << left << "|"; cout << "|\t"; }
+
+		cout << session_num + 1 << " сессия: ";
+		// в записи есть хоть один результат сессии
+		if (getEmptySessionNumber(session_num) != 0) {
+			for (int subject_num = 0; subject_num < 10; subject_num++) {
+				if (!session.is_empty[session_num][subject_num]) {
+					if (subject_num != 0) {
+						cout.width(36);
+						cout << left << "|";
+						cout << "|\t\t  ";
+					}
+					cout << session.subject[session_num][subject_num] << " – ";
+
+					if (session.mark[session_num][subject_num] == 0) {
+						cout << "незачёт";
+						cout.width(63 - 9 - session.subject[session_num][subject_num].length() - 3 - 8);
+					}
+					else if (session.mark[session_num][subject_num] == 1) {
+						cout << "зачёт";
+						cout.width(63 - 9 - session.subject[session_num][subject_num].length() - 3 - 6);
+					}
+					else {
+						cout << session.mark[session_num][subject_num];
+						cout.width(63 - 10 - session.subject[session_num][subject_num].length() - 3 - 1);
+					}
+					cout << right << "|\n";
+
+				}
+				// пустая запись (закончились)
+				else { break; }
+			}
+		}
+		// нет данных о сессиях
+		else {
+			cout << "нет данных";
+			cout.width(63 - 20);
+			cout << right << "|\n";
+		}
+	}
+	line;
+	cout << "\n\n";
 }
 
 

@@ -84,7 +84,7 @@ public:
 	void getSession();
 
 	void writeStudent();
-	void printStudent();
+	void printStudent(int student_num);
 	int writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admission_year_, Faculty faculty_,
 					  Department department_, Group group_, StudentBookNumber studentbook_number_,
 					  Sex sex_, Session session_);
