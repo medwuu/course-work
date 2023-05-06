@@ -128,9 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CourseWork.cpp" />
+    <ClCompile Include="Functions.cpp" />
+    <ClCompile Include="Student.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Student.cpp" />
+    <ClInclude Include="Functions.h" />
     <ClInclude Include="Student.h" />
   </ItemGroup>
   <ItemGroup>

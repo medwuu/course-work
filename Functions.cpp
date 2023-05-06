@@ -4,6 +4,9 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <conio.h>
+
+#include "Functions.h"
 
 using namespace std;
 
@@ -34,7 +37,7 @@ bool checkForValue(int min, int value, int max) {
 		cout << "\a";
 		cout << "Введено неверное значение (" << value << ")! Введите число от " << min << " до " << max << "\n";
 		cout << "Для продолжения нажмите любую клавишу...";
-		_getch();
+		system("pause");
 		system("cls");
 		return false;
 	}
