@@ -363,7 +363,12 @@ int Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admiss
 	// выглядит сложно, но этот мега-цикл проходит по всем сессиям
 	for (int session_num = 0; session_num < 9; session_num++) {
 		// тут определятся, есть ли вообще в сессии записи
-		int subject_count = getEmptySessionNumber(session_num);
+		int subject_count;
+		for (int i = 0; i < 10; i++) {
+			if (session_.is_empty[session_num][i]) {
+				subject_count = i;
+			}
+		}
 		if (subject_count) {
 			file << session_num << "\n";
 			// ну и наконец, проходимся в непустой(!) сессии по непустым(!) записям и записываем в файл
@@ -390,7 +395,10 @@ int Student::readFromFile(int requirement_number) {
 	}
 	else {
 		while (getline(file, buffer, '\n')) {
-			if (student_number == requirement_number && buffer != end_record) {
+			// в файл записываются неиницализированные значения. этот блок просто не читает их
+			// костыли? ну а что поделать. так и живём		||		кроме шуток, я 2 дня пытался пофиксить эту ошибку, поэтому даже такое решение меня устраивает
+			if (buffer == ":-858993460") {}
+			else if (student_number == requirement_number && buffer != end_record) {
 				switch (f_line) {
 				case 0:
 					fio.surname = buffer;
@@ -500,6 +508,7 @@ void Student::editStudent(Student* student, int student_count) {
 	while (true) {
 		cout << "Введите порядковый номер (на рукаве) студента, данные которого хотите изменить: ";
 		requred_student = getDigit("Введите порядковый номер (на рукаве) студента, данные которого хотите изменить: ");
+		cout << "\n";
 		if (checkForValue(1, requred_student, student_count)) {
 			break;
 		}
@@ -509,10 +518,10 @@ void Student::editStudent(Student* student, int student_count) {
 	system("cls");
 
 	while (true) {
-		cout << "Теперь введите номер параметра, который хотите изменить.\nПодсказка:\n1-фамилия\n2-имя\n3-отчество\n4-дата рождения\n5-год поступления\n6-факультет\n7-кафедра\n8-группа\n9-номер зачётной книжки\n10-пол\nВаш выбор: ";
-		parameter = getDigit("Теперь введите номер параметра, который хотите изменить.\nПодсказка:\n1-фамилия\n2-имя\n3-отчество\n4-дата рождения\n5-год поступления\n6-факультет\n7-кафедра\n8-группа\n9-номер зачётной книжки\n10-пол\nВаш выбор: ");
-		// TODO: изменить максимальное значение с учётом сессии
-		if (checkForValue(1, parameter, 12)) {
+		cout << "Теперь введите номер параметра, который хотите изменить.\nПодсказка:\n1-фамилия\n2-имя\n3-отчество\n4-дата рождения\n5-год поступления\n6-факультет\n7-кафедра\n8-группа\n9-номер зачётной книжки\n10-пол\n11-данные о сессии\n\nВаш выбор: ";
+		parameter = getDigit("Теперь введите номер параметра, который хотите изменить.\nПодсказка:\n1-фамилия\n2-имя\n3-отчество\n4-дата рождения\n5-год поступления\n6-факультет\n7-кафедра\n8-группа\n9-номер зачётной книжки\n10-пол\n11-данные о сессии\n\nВаш выбор: ");
+		cout << "\n";
+		if (checkForValue(1, parameter, 11)) {
 			break;
 		}
 	}
@@ -546,6 +555,9 @@ void Student::editStudent(Student* student, int student_count) {
 	case 10:
 		student[requred_student].getSex();
 		break;
+	case 11:
+		student[requred_student].editStudentSession(requred_student);
+		break;
 	default:
 		cout << "Произошла непредвиденная ошибка!";
 	}
@@ -559,4 +571,69 @@ void Student::editStudent(Student* student, int student_count) {
 	cout << "Данные успешно обновлены!\nДля продолжения нажмите любую клавишу...";
 	_getch();
 	system("cls");
+}
+
+
+// изменение сессии студента
+void Student::editStudentSession(int required_student) {
+	int choose, session_num, subject_num, num_subj_in_session, new_mark;
+	string new_subject;
+	printStudent(required_student);
+	cout << "Введите \"0\", если хотите добавить новую запись, или \"1\", если хотите изменить уже имеющуюся: ";
+	while (true) {
+		choose = getDigit("Введите \"0\", если хотите добавить новую запись, или \"1\", если хотите изменить уже имеющуюся: ");
+		cout << "\n";
+		if (checkForValue(0, choose, 1)) {
+			break;
+		}
+	}
+	system("cls");
+	if (choose == 0) {
+		getSession();
+	}
+	else {
+		// получаем номер сессии
+		printStudent(required_student);
+		cout << "Введите номер сессии, данные которой вы хотите изменить: ";
+		while (true) {
+			session_num = getDigit("Введите номер сессии, данные которой вы хотите изменить: ");
+			cout << "\n";
+			if (checkForValue(1, session_num, 9)) {
+				num_subj_in_session = getEmptySessionNumber(session_num - 1);
+				if (num_subj_in_session == 0) { cout << "В этой сессии нет предметов для изменения. Воспользуйтесь функцией добавления новой записи!"; }
+				else { break; }
+			}
+		}
+		system("cls");
+
+		// получаем нормер предмета
+		printStudent(required_student);
+		cout << "Теперь введите номер предмета, данные которого хотите изменить: ";
+		while (true) {
+			subject_num = getDigit("Теперь введите номер предмета, данные которого хотите изменить: ");
+			cout << "\n";
+			if (checkForValue(1, subject_num, num_subj_in_session)) {
+				break;
+			}
+		}
+		system("cls");
+
+		// получаем новое название предмета
+		cout << "Введите название предмета: ";
+		cin >> new_subject;
+
+		// получаем  новую оценку
+		cout << "Теперь введите оценку для предмета.\n0 - незачёт\n1 - зачёт\n2 - неудовлетворительно\n3 - удовлетворительно\n4 - хорошо\n5 - отлично\n\nВаш выбор : ";
+		while (true) {
+			new_mark = getDigit("Теперь введите оценку для предмета.\n0-незачёт\n1-зачёт\n2-неудовлетворительно\n3-удовлетворительно\n4-хорошо\n5-отлично\n\nВаш выбор: ");
+			cout << "\n";
+			if (checkForValue(0, new_mark, 5)) {
+				break;
+			}
+		}
+
+		// заменяем значения в элементе класса
+		session.subject[session_num - 1][subject_num - 1] = new_subject;
+		session.mark[session_num - 1][subject_num - 1] = new_mark;
+	}
 }

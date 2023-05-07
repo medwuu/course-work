@@ -90,5 +90,6 @@ public:
 					  Sex sex_, Session session_);
 	int readFromFile(int required_number);
 	void editStudent(Student* student, int student_count);
+	void editStudentSession(int required_student);
 	void deleteStudent(Student* student, int student_count);
 };
