@@ -1,6 +1,7 @@
 ﻿/*
 Файл с функциями класса Student
 */
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -219,7 +220,7 @@ int Student::getEmptySessionNumber(int session_num) {
 
 
 // ввод записи с клавиатуры
-void Student::writeStudent() {
+void Student::addStudent() {
 	getSurname();
 	getName();
 	getPatronymic();
@@ -230,7 +231,7 @@ void Student::writeStudent() {
 	getGroup();
 	getStudentbookNumber();
 	getSex();
-	getSession();
+	getSession();	
 	writeIntoFile(fio, birth_date, admission_year, faculty, department, group, studentbook_number, sex, session);
 	cout << "Данные успешно записаны в файл \"StudentsData.txt\"\n";
 	cout << "Для продолжения нажмите любую клавишу. . .";
@@ -397,7 +398,7 @@ int Student::readFromFile(int requirement_number) {
 		while (getline(file, buffer, '\n')) {
 			// в файл записываются неиницализированные значения. этот блок просто не читает их
 			// костыли? ну а что поделать. так и живём		||		кроме шуток, я 2 дня пытался пофиксить эту ошибку, поэтому даже такое решение меня устраивает
-			if (buffer == ":-858993460") {}
+			if (buffer[0] == ':' && buffer[1] == '-') {}
 			else if (student_number == requirement_number && buffer != end_record) {
 				switch (f_line) {
 				case 0:
@@ -468,7 +469,7 @@ int Student::readFromFile(int requirement_number) {
 
 
 // удаление студента
-void Student::deleteStudent(Student* student, int student_count) {
+int Student::deleteStudent(Student* student, int student_count) {
 	int number;
 	if (student_count == 0) {
 		cout << "Пока не кого отчислять :(\n";
@@ -478,15 +479,90 @@ void Student::deleteStudent(Student* student, int student_count) {
 			cout << "Введите порядковый номер (на рукаве) студента: ";
 			cin >> number;
 			if (checkForValue(1, number, student_count)) {
+				number--;
 				break;
 			}
 		}
 		system("cls");
-		// сдвигаем массив на -1
-		for (number--; number < student_count; number++) {
-			student[number] = student[number + 1];
+
+		// очищаем файл перед записью всех "сдвинутых" значений
+		ofstream file("StudentsData.txt", ios_base::trunc);
+		file.close();
+		for (int i = 0; i < student_count; i++) {
+			if (i != number) {
+				writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
+			}
 		}
-		student_count--;
+		cout << "Данные успешно обновлены!\n";
+	}
+	cout << "Для продолжения нажмите любую клавишу...";
+	_getch();
+	system("cls");
+	return number;
+}
+
+
+// изменение данных студента
+void Student::editStudent(Student* student, int student_count) {
+	if (student_count == 0) { cout << "Тут что-то пусто. Для начала, добавьте студентов\n"; }
+	else {
+		int requred_student, parameter;
+		while (true) {
+			cout << "Введите порядковый номер (на рукаве) студента, данные которого хотите изменить: ";
+			requred_student = getDigit("Введите порядковый номер (на рукаве) студента, данные которого хотите изменить: ");
+			cout << "\n";
+			if (checkForValue(1, requred_student, student_count)) {
+				break;
+			}
+		}
+		// уменьшаем на 1, потому что работаем с индексами
+		requred_student--;
+		system("cls");
+
+		while (true) {
+			cout << "Теперь введите номер параметра, который хотите изменить.\nПодсказка:\n1-фамилия\n2-имя\n3-отчество\n4-дата рождения\n5-год поступления\n6-факультет\n7-кафедра\n8-группа\n9-номер зачётной книжки\n10-пол\n11-данные о сессии\n\nВаш выбор: ";
+			parameter = getDigit("Теперь введите номер параметра, который хотите изменить.\nПодсказка:\n1-фамилия\n2-имя\n3-отчество\n4-дата рождения\n5-год поступления\n6-факультет\n7-кафедра\n8-группа\n9-номер зачётной книжки\n10-пол\n11-данные о сессии\n\nВаш выбор: ");
+			cout << "\n";
+			if (checkForValue(1, parameter, 11)) {
+				break;
+			}
+		}
+		system("cls");
+
+		switch (parameter) {
+		case 1:
+			student[requred_student].getSurname();
+			break;
+		case 2:
+			student[requred_student].getName();
+			break;
+		case 3:
+			student[requred_student].getBirthDate();
+			break;
+		case 5:
+			student[requred_student].getAdmissionYear();
+			break;
+		case 6:
+			student[requred_student].getFaculty();
+			break;
+		case 7:
+			student[requred_student].getDepartment();
+			break;
+		case 8:
+			student[requred_student].getGroup();
+			break;
+		case 9:
+			student[requred_student].getStudentbookNumber();
+			break;
+		case 10:
+			student[requred_student].getSex();
+			break;
+		case 11:
+			student[requred_student].editStudentSession(requred_student);
+			break;
+		default:
+			cout << "Произошла непредвиденная ошибка!";
+		}
 
 		// очищаем файл перед записью всех "сдвинутых" значений
 		ofstream file("StudentsData.txt", ios_base::trunc);
@@ -497,78 +573,6 @@ void Student::deleteStudent(Student* student, int student_count) {
 		cout << "Данные успешно обновлены!\n";
 	}
 	cout << "Для продолжения нажмите любую клавишу...";
-	_getch();
-	system("cls");
-}
-
-
-// изменение данных студента
-void Student::editStudent(Student* student, int student_count) {
-	int requred_student, parameter;
-	while (true) {
-		cout << "Введите порядковый номер (на рукаве) студента, данные которого хотите изменить: ";
-		requred_student = getDigit("Введите порядковый номер (на рукаве) студента, данные которого хотите изменить: ");
-		cout << "\n";
-		if (checkForValue(1, requred_student, student_count)) {
-			break;
-		}
-	}
-	// уменьшаем на 1, потому что работаем с индексами
-	requred_student--;
-	system("cls");
-
-	while (true) {
-		cout << "Теперь введите номер параметра, который хотите изменить.\nПодсказка:\n1-фамилия\n2-имя\n3-отчество\n4-дата рождения\n5-год поступления\n6-факультет\n7-кафедра\n8-группа\n9-номер зачётной книжки\n10-пол\n11-данные о сессии\n\nВаш выбор: ";
-		parameter = getDigit("Теперь введите номер параметра, который хотите изменить.\nПодсказка:\n1-фамилия\n2-имя\n3-отчество\n4-дата рождения\n5-год поступления\n6-факультет\n7-кафедра\n8-группа\n9-номер зачётной книжки\n10-пол\n11-данные о сессии\n\nВаш выбор: ");
-		cout << "\n";
-		if (checkForValue(1, parameter, 11)) {
-			break;
-		}
-	}
-	system("cls");
-
-	switch (parameter) {
-	case 1:
-		student[requred_student].getSurname();
-		break;
-	case 2:
-		student[requred_student].getName();
-		break;
-	case 3:
-		student[requred_student].getBirthDate();
-		break;
-	case 5:
-		student[requred_student].getAdmissionYear();
-		break;
-	case 6:
-		student[requred_student].getFaculty();
-		break;
-	case 7:
-		student[requred_student].getDepartment();
-		break;
-	case 8:
-		student[requred_student].getGroup();
-		break;
-	case 9:
-		student[requred_student].getStudentbookNumber();
-		break;
-	case 10:
-		student[requred_student].getSex();
-		break;
-	case 11:
-		student[requred_student].editStudentSession(requred_student);
-		break;
-	default:
-		cout << "Произошла непредвиденная ошибка!";
-	}
-
-	// очищаем файл перед записью всех "сдвинутых" значений
-	ofstream file("StudentsData.txt", ios_base::trunc);
-	file.close();
-	for (int i = 0; i < student_count; i++) {
-		writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
-	}
-	cout << "Данные успешно обновлены!\nДля продолжения нажмите любую клавишу...";
 	_getch();
 	system("cls");
 }

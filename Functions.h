@@ -1,6 +1,7 @@
 ﻿/*
 Файл с прототипами функций из Functions.cpp
 */
+
 #pragma once
 
 int getAmountOfStudents();

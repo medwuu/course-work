@@ -1,6 +1,7 @@
 ﻿/*
 Файл класса Student и прототипами его функций
 */
+
 #pragma once
 using namespace std;
 
@@ -83,7 +84,7 @@ public:
 	int getEmptySessionNumber(int session_num);
 	void getSession();
 
-	void writeStudent();
+	void addStudent();
 	void printStudent(int student_num);
 	int writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admission_year_, Faculty faculty_,
 					  Department department_, Group group_, StudentBookNumber studentbook_number_,
@@ -91,5 +92,5 @@ public:
 	int readFromFile(int required_number);
 	void editStudent(Student* student, int student_count);
 	void editStudentSession(int required_student);
-	void deleteStudent(Student* student, int student_count);
+	int deleteStudent(Student* student, int student_count);
 };

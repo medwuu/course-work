@@ -1,6 +1,7 @@
 ﻿/*
 Файл с дополнительными функциями
 */
+
 #include <iostream>
 #include <string>
 #include <fstream>
