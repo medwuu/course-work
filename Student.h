@@ -94,4 +94,5 @@ public:
 	void editStudent(Student* student, int student_count);
 	void editStudentSession(int required_student);
 	int deleteStudent(Student* student, int student_count);
+	void deleteSession(int required_student);
 };

@@ -587,7 +587,7 @@ void Student::editStudent(Student* student, int student_count) {
 }
 
 
-// изменение сессии студента
+// изменение сессии студента и удаление
 void Student::editStudentSession(int required_student) {
 	int choose, session_num, subject_num, num_subj_in_session, new_mark;
 	string new_subject;
@@ -655,48 +655,46 @@ void Student::editStudentSession(int required_student) {
 
 	// удалить существующую запись
 	else {
-		// получаем номер сессии
-		printStudent(required_student);
-		cout << "Введите номер сессии, данные которой вы хотите удалить: ";
-		while (true) {
-			session_num = getDigit("Введите номер сессии, данные которой вы хотите удалить: ");
-			cout << "\n";
-			if (checkForValue(1, session_num, 9)) {
-				num_subj_in_session = getEmptySessionNumber(session_num - 1);
-				if (num_subj_in_session == 0) { cout << "В этой сессии нет предметов для удаления. Воспользуйтесь функцией добавления новой записи!"; }
-				else { break; }
-			}
-		}
-		system("cls");
+		deleteSession(required_student);
+	}
+}
 
-		// получаем нормер предмета
-		printStudent(required_student);
-		cout << "Теперь введите номер предмета, данные которого хотите удалить: ";
-		while (true) {
-			subject_num = getDigit("Теперь введите номер предмета, данные которого хотите удалить: ");
-			cout << "\n";
-			if (checkForValue(1, subject_num, num_subj_in_session)) {
-				break;
-			}
-		}
-		system("cls");
-
-
-		if (!session.is_empty[session_num - 1][subject_num]) {
-			while (!session.is_empty[session_num - 1][subject_num]) {
-				session.subject[session_num - 1][subject_num - 1] = session.subject[session_num - 1][subject_num];
-				session.mark[session_num - 1][subject_num - 1] = session.mark[session_num - 1][subject_num];
-				session.is_empty[session_num - 1][subject_num - 1] = session.is_empty[session_num - 1][subject_num];
-				subject_num++;
-			}
-			session.subject[session_num - 1][subject_num - 1] = "";
-			session.mark[session_num - 1][subject_num - 1] = -1;
-			session.is_empty[session_num - 1][subject_num - 1] = true;
-		}
-		else {
-			session.subject[session_num - 1][subject_num - 1] = "";
-			session.mark[session_num - 1][subject_num - 1] = -1;
-			session.is_empty[session_num - 1][subject_num - 1] = true;
+void Student::deleteSession(int required_student) {
+	int session_num, subject_num, num_subj_in_session;
+	printStudent(required_student);
+	cout << "Введите номер сессии, данные которой вы хотите удалить: ";
+	while (true) {
+		session_num = getDigit("Введите номер сессии, данные которой вы хотите удалить: ");
+		cout << "\n";
+		if (checkForValue(1, session_num, 9)) {
+			num_subj_in_session = getEmptySessionNumber(session_num - 1);
+			if (num_subj_in_session == 0) { cout << "В этой сессии нет предметов для удаления. Воспользуйтесь функцией добавления новой записи!"; }
+			else { break; }
 		}
 	}
+	system("cls");
+
+	printStudent(required_student);
+	cout << "Теперь введите номер предмета, данные которого хотите удалить: ";
+	while (true) {
+		subject_num = getDigit("Теперь введите номер предмета, данные которого хотите удалить: ");
+		cout << "\n";
+		if (checkForValue(1, subject_num, num_subj_in_session)) {
+			break;
+		}
+	}
+	system("cls");
+
+
+	if (!session.is_empty[session_num - 1][subject_num]) {
+		while (!session.is_empty[session_num - 1][subject_num]) {
+			session.subject[session_num - 1][subject_num - 1] = session.subject[session_num - 1][subject_num];
+			session.mark[session_num - 1][subject_num - 1] = session.mark[session_num - 1][subject_num];
+			session.is_empty[session_num - 1][subject_num - 1] = session.is_empty[session_num - 1][subject_num];
+			subject_num++;
+		}
+	}
+	session.subject[session_num - 1][subject_num - 1] = "";
+	session.mark[session_num - 1][subject_num - 1] = -1;
+	session.is_empty[session_num - 1][subject_num - 1] = true;
 }
