@@ -71,6 +71,7 @@ private:
 	Sex sex;
 	Session session;
 public:
+	Student();
 	void getSurname();
 	void getName();
 	void getPatronymic();

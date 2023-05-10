@@ -17,6 +17,17 @@ using namespace std;
 // обозначает конец записи в файле
 string end_record = "=== END ===";
 
+Student::Student() {
+	fio.surname = fio.name = fio.patronymic = faculty.faculty = department.department = group.group = studentbook_number.student_book_number = sex.sex = "";
+	birth_date.day = birth_date.month = birth_date.year = admission_year.admission_year = -1;
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 10; j++) {
+			session.subject[i][j] = "";
+			session.mark[i][j] = -1;
+			session.is_empty[i][j] = true;
+		}
+	}
+}
 
 void Student::getSurname() {
 	cout << "Введите фамилию: ";
@@ -581,19 +592,22 @@ void Student::editStudentSession(int required_student) {
 	int choose, session_num, subject_num, num_subj_in_session, new_mark;
 	string new_subject;
 	printStudent(required_student);
-	cout << "Введите \"0\", если хотите добавить новую запись, или \"1\", если хотите изменить уже имеющуюся: ";
+	cout << "Введите:\n\"1\", чтобы добавить новую запись\n\"2\", чтобы изменить существующую запись\n\"3\", чтобы удалить существующую запись\n\nВаш выбор : ";
 	while (true) {
-		choose = getDigit("Введите \"0\", если хотите добавить новую запись, или \"1\", если хотите изменить уже имеющуюся: ");
+		choose = getDigit("Введите:\n\"1\", чтобы добавить новую запись\n\"2\", чтобы изменить существующую запись\n\"3\", чтобы удалить существующую запись\n\nВаш выбор : ");
 		cout << "\n";
-		if (checkForValue(0, choose, 1)) {
+		if (checkForValue(1, choose, 3)) {
 			break;
 		}
 	}
 	system("cls");
-	if (choose == 0) {
+
+	// добавить новую запись
+	if (choose == 1) {
 		getSession();
 	}
-	else {
+
+	else if (choose == 2) {
 		// получаем номер сессии
 		printStudent(required_student);
 		cout << "Введите номер сессии, данные которой вы хотите изменить: ";
@@ -637,5 +651,52 @@ void Student::editStudentSession(int required_student) {
 		// заменяем значения в элементе класса
 		session.subject[session_num - 1][subject_num - 1] = new_subject;
 		session.mark[session_num - 1][subject_num - 1] = new_mark;
+	}
+
+	// удалить существующую запись
+	else {
+		// получаем номер сессии
+		printStudent(required_student);
+		cout << "Введите номер сессии, данные которой вы хотите удалить: ";
+		while (true) {
+			session_num = getDigit("Введите номер сессии, данные которой вы хотите удалить: ");
+			cout << "\n";
+			if (checkForValue(1, session_num, 9)) {
+				num_subj_in_session = getEmptySessionNumber(session_num - 1);
+				if (num_subj_in_session == 0) { cout << "В этой сессии нет предметов для удаления. Воспользуйтесь функцией добавления новой записи!"; }
+				else { break; }
+			}
+		}
+		system("cls");
+
+		// получаем нормер предмета
+		printStudent(required_student);
+		cout << "Теперь введите номер предмета, данные которого хотите удалить: ";
+		while (true) {
+			subject_num = getDigit("Теперь введите номер предмета, данные которого хотите удалить: ");
+			cout << "\n";
+			if (checkForValue(1, subject_num, num_subj_in_session)) {
+				break;
+			}
+		}
+		system("cls");
+
+
+		if (!session.is_empty[session_num - 1][subject_num]) {
+			while (!session.is_empty[session_num - 1][subject_num]) {
+				session.subject[session_num - 1][subject_num - 1] = session.subject[session_num - 1][subject_num];
+				session.mark[session_num - 1][subject_num - 1] = session.mark[session_num - 1][subject_num];
+				session.is_empty[session_num - 1][subject_num - 1] = session.is_empty[session_num - 1][subject_num];
+				subject_num++;
+			}
+			session.subject[session_num - 1][subject_num - 1] = "";
+			session.mark[session_num - 1][subject_num - 1] = -1;
+			session.is_empty[session_num - 1][subject_num - 1] = true;
+		}
+		else {
+			session.subject[session_num - 1][subject_num - 1] = "";
+			session.mark[session_num - 1][subject_num - 1] = -1;
+			session.is_empty[session_num - 1][subject_num - 1] = true;
+		}
 	}
 }
