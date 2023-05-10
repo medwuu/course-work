@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <conio.h>
 
+#include "MainMenu.h"
 #include "Functions.h"
 #include "Student.h"
 
@@ -16,14 +17,15 @@ int action;
 
 // вызов и выбор действия в главном меню
 void mainMenu() {
-	cout << "Главное меню:\n";
-	cout << "1. Добавить запись\n";
-	cout << "2. Вывод данных\n";
-	cout << "3. Изменение данных\n";
-	cout << "4. Удалить запись\n";
-	cout << "5. Выполнить 24 вариант\n";
-	cout << "6. Выход\n\n";
-	cout << "Выберите действие (число от 1 до 6): ";
+	MainMenu* main_menu = new MainMenu("Главное меню:");
+	main_menu->push_back("Добавить запись");
+	main_menu->push_back("Вывод данных");
+	main_menu->push_back("Изменение данных");
+	main_menu->push_back("Удалить запись");
+	main_menu->push_back("Выполнить 24 вариант");
+	main_menu->push_back("Выход\n");
+	main_menu->push_back("Выберите действие (число от 1 до 6): ");
+	main_menu->printItem();
 	cin >> action;
 	system("cls");
 	if (!checkForValue(1, action, 6)) {

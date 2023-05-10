@@ -343,7 +343,7 @@ void Student::printStudent(int student_num) {
 
 
 // запись данных (одной записи) в файл
-int Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admission_year_, Faculty faculty_,
+void Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admission_year_, Faculty faculty_,
 						   Department department_, Group group_, StudentBookNumber studentbook_number_,
 						   Sex sex_, Session session_) {
 	ofstream file("StudentsData.txt", ios_base::app);
@@ -351,7 +351,7 @@ int Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admiss
 	if (!file.is_open()) {
 		cout << "Файл не открыт!";
 		_getch();
-		return 404;
+		return;
 	}
 	file << fio_.surname << "\n" << fio_.name << "\n" << fio_.patronymic << "\n";
 	file << birth_date_.day << "\n" << birth_date_.month << "\n" << birth_date_.year << "\n";
@@ -380,19 +380,18 @@ int Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admiss
 	}
 	file << end_record << "\n";
 	file.close();
-	return 0;
 }
 
 
 // чтение данных (одной записи) из файла
-int Student::readFromFile(int requirement_number) {
+void Student::readFromFile(int requirement_number) {
 	int student_number = 0, session_num;
 	string buffer;
 	int f_line = 0;
 	ifstream file("StudentsData.txt", ios_base::out);
 	if (!file.is_open()) {
 		cout << "Файл не открыт!\n";
-		return 404;
+		return;
 	}
 	else {
 		while (getline(file, buffer, '\n')) {
@@ -463,7 +462,6 @@ int Student::readFromFile(int requirement_number) {
 			}
 		}
 		file.close();
-		return 0;
 	}
 }
 
