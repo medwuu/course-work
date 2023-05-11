@@ -55,6 +55,7 @@ struct Session {
 	// проверка, пустое ли значение (9 сессий по 10 предметов в каждой)
 	// true – пусто, false – нет
 	bool is_empty[9][10];
+	float mean;
 };
 
 
@@ -72,18 +73,22 @@ private:
 	Session session;
 public:
 	Student();
-	void getSurname();
-	void getName();
-	void getPatronymic();
-	void getBirthDate();
-	void getAdmissionYear();
-	void getFaculty();
-	void getDepartment();
-	void getGroup();
-	void getStudentbookNumber();
-	void getSex();
+	void setSurname();
+	void setName();
+	void setPatronymic();
+	void setBirthDate();
+	void setAdmissionYear();
+	void setFaculty();
+	void setDepartment();
+	void setGroup();
+	void setStudentbookNumber();
+	void setSex();
+	void setSession();
+	void setMean();
+
+	int getAdmissionYear();
+	float getMean();
 	int getEmptySessionNumber(int session_num);
-	void getSession();
 
 	void addStudent();
 	void printStudent(int student_num);

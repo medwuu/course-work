@@ -8,6 +8,7 @@
 #include <conio.h>
 
 #include "Functions.h"
+#include "Student.h"
 
 using namespace std;
 
@@ -88,4 +89,82 @@ int getDigit(string whatToEnter) {
 		cout << whatToEnter << output;
 	}
 	return atoi(output.c_str());
+}
+
+
+void bubbleSort(Student* student, int* &arr, int len)
+{
+	while (len--) {
+		// менялись ли местами
+		bool swapped = false;
+		for (int i = 0; i < len; i++) {
+			if (student[i].getMean() < student[i + 1].getMean()) {
+				swap(arr[i], arr[i + 1]);
+				swapped = true;
+			}
+		}
+		// если уже всё отсортировано
+		if (swapped == false)
+			break;
+	}
+}
+
+// выполнение 24 варианта
+void task(Student* student) {
+	// получаем год поступления, по которому будем сортировать
+	int required_admission_year;
+	cout << "Введите год поступления для сортировки: ";
+	while (true) {
+		required_admission_year = getDigit("Введите год поступления для сортировки: ");
+		cout << "\n";
+		if (checkForValue(1900, required_admission_year, 2022)) {
+			break;
+		}
+	}
+	system("cls");
+
+	// создаём 2 динамических массива с индексами элементов, у которых год поступления совпадает или нет с тем, который ввёл пользователь
+	int s_len = 0, us_len = 0, student_count = getAmountOfStudents();
+	int* suitable = new int;
+	int* unsuitable = new int;
+	for (int i = 0; i < student_count; i++) {
+		// записываем подходящих
+		if (student[i].getAdmissionYear() == required_admission_year) {
+			int* new_suitable = new int[s_len + 1];
+			for (int j = 0; j < s_len; j++) { new_suitable[j] = suitable[j]; }
+			new_suitable[s_len] = i;
+			delete[] suitable;
+			suitable = new_suitable;
+			s_len++;
+		}
+		// а тут тех, кто не прошёл отбор ):
+		else {
+			int* new_unsuitable = new int[us_len + 1];
+			for (int j = 0; j < us_len; j++) { new_unsuitable[j] = unsuitable[j]; }
+			new_unsuitable[us_len] = i;
+			delete[] unsuitable;
+			unsuitable = new_unsuitable;
+			us_len++;
+		}
+	}
+
+	// сортируем оба массива по session.mean. массив меняется и в bubbleSort(), и здесь (потому что стоит "&" в принимаемых параметрах), поэтому bubbleSort возвращает void
+	// решил сделать пузырьковую сортировку, потому что могу. вопросы?    ||    кроме шуток, такой способ лучше не использовать в реальных проектах, потому что он too slow
+	bubbleSort(student, suitable, s_len);
+	bubbleSort(student, unsuitable, us_len);
+	
+	// выводим отсортированный список студентов
+	cout << "Вот они: сверху вниз, студенты, поступившие в " << required_admission_year << " году:\n";
+	for (int i = 0; i < s_len; i++) { student[suitable[i]].printStudent(i); }
+	cout << "\n";
+	cout << "А вот студенты, поступившие в другие года:\n";
+	for (int i = 0; i < us_len; i++) { student[unsuitable[i]].printStudent(i); }
+
+	// очищаем динамические массивы и их указатели
+	delete[] suitable; delete[] unsuitable;
+	suitable = unsuitable = nullptr;
+
+	cout << "Для продолжения нажмите любую клавишу . . .";
+	_getch();
+	system("cls");
 }

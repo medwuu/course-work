@@ -1,6 +1,7 @@
 ﻿/*
 Файл с однонаправленным списком главного меню
 */
+
 #pragma once
 
 #include <iostream>
@@ -55,7 +56,7 @@ public:
 			for (int i = 0; i < index - 1; i++) {
 				current = current->next;
 			}
-			struct Node* new_item = new Node();
+			struct Node* new_item = new Node;
 			new_item->data = inp_data;
 			new_item->next = current->next;
 			current->next = new_item;

@@ -99,12 +99,13 @@ int main() {
 		}
 		break;
 		case 5:
-			cout << "Case 5\n";
+			task(student);
 			break;
 		case 6:
 			cout << "Конец работы программы\n\n";
 			// эта строка не играет роли, но для better coding'а я следую правилу "написал new – освободи память"
 			delete[] student;
+			student = nullptr;
 			return 0;
 		// в идеале, этот блок никогда не должен срабатывать, потому что есть checkForValue()
 		default:

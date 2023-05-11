@@ -26,31 +26,32 @@ Student::Student() {
 			session.mark[i][j] = -1;
 			session.is_empty[i][j] = true;
 		}
+		session.mean = -1;
 	}
 }
 
-void Student::getSurname() {
+void Student::setSurname() {
 	cout << "Введите фамилию: ";
 	string out = getAlpha("Введите фамилию: ");
 	system("cls");
 	fio.surname = out;
 }
 
-void Student::getName() {
+void Student::setName() {
 	cout << "Введите имя: ";
 	string out = getAlpha("Введите имя: ");
 	system("cls");
 	fio.name = out;
 }
 
-void Student::getPatronymic() {
+void Student::setPatronymic() {
 	cout << "Введите отчество: ";
 	string out = getAlpha("Введите отчество: ");
 	system("cls");
 	fio.patronymic = out;
 }
 
-void Student::getBirthDate() {
+void Student::setBirthDate() {
 	int out_day;
 	int out_month;
 	int out_year;
@@ -79,10 +80,10 @@ void Student::getBirthDate() {
 	system("cls");
 
 	while (true) {
-		cout << "Введите год рождения (число от 1900 до 2004): ";
-		out_year = getDigit("Введите год рождения (число от 1900 до 2004): ");
+		cout << "Введите год рождения (число от 1900 до 2005): ";
+		out_year = getDigit("Введите год рождения (число от 1900 до 2005): ");
 		cout << "\n";
-		if (checkForValue(1900, out_year, 2004)) {
+		if (checkForValue(1900, out_year, 2005)) {
 			break;
 		}
 		system("cls");
@@ -94,7 +95,7 @@ void Student::getBirthDate() {
 	birth_date.year = out_year;
 }
 
-void Student::getAdmissionYear() {
+void Student::setAdmissionYear() {
 	int out;
 	while (true) {
 		cout << "Введите год поступления (число от 1900 до 2022): ";
@@ -109,14 +110,14 @@ void Student::getAdmissionYear() {
 	admission_year.admission_year = out;
 }
 
-void Student::getFaculty() {
+void Student::setFaculty() {
 	cout << "Введите факультет: ";
 	string out = getAlpha("Введите факультет: ");
 	system("cls");
 	faculty.faculty = out;
 }
 
-void Student::getDepartment() {
+void Student::setDepartment() {
 	string out;
 	cout << "Введите кафедру: ";
 	cin >> out;
@@ -124,7 +125,7 @@ void Student::getDepartment() {
 	department.department = out;
 }
 
-void Student::getGroup() {
+void Student::setGroup() {
 	string out;
 	cout << "Введите группу: ";
 	cin >> out;
@@ -132,7 +133,7 @@ void Student::getGroup() {
 	group.group = out;
 }
 
-void Student::getStudentbookNumber() {
+void Student::setStudentbookNumber() {
 	string out;
 	cout << "Введите номер зачётной книжки: ";
 	cin >> out;
@@ -140,7 +141,7 @@ void Student::getStudentbookNumber() {
 	studentbook_number.student_book_number = out;
 }
 
-void Student::getSex() {
+void Student::setSex() {
 	int out;
 	while (true) {
 		cout << "Введите пол (1 – мужской, 0 – женский): ";
@@ -162,7 +163,7 @@ void Student::getSex() {
 	}
 }
 
-void Student::getSession() {
+void Student::setSession() {
 	int session_num, out_mark;
 	string out_subject;
 	while (true) {
@@ -218,6 +219,33 @@ void Student::getSession() {
 	}
 }
 
+// устанавливаем для каждой сессии средний балл (необходимо для выполнения 24 варианта)
+void Student::setMean() {
+	int sum = 0, total_subject_num = 0;
+	for (int session_num = 0; session_num < 9; session_num++) {
+		int subj_in_session = getEmptySessionNumber(session_num);
+		if (subj_in_session) {
+			for (int subject_num = 0; subject_num < subj_in_session; subject_num++) {
+				// "незачёт" приравниваем к оценке "2"
+				if (session.mark[session_num][subject_num] == 0) { sum += 2; }
+				// "зачёт" приравниваем к оценке "5"
+				else if (session.mark[session_num][subject_num] == 1) { sum += 5; }
+				// для всех остальных оценок
+				else { sum += session.mark[session_num][subject_num]; }
+				total_subject_num++;
+			}
+		}
+	}
+	session.mean = float(sum) / total_subject_num;
+}
+
+int Student::getAdmissionYear() {
+	return admission_year.admission_year;
+}
+
+float Student::getMean() {
+	return session.mean;
+}
 
 // узнать, сколько предметов записано в одной сессии
 int Student::getEmptySessionNumber(int session_num) {
@@ -232,17 +260,18 @@ int Student::getEmptySessionNumber(int session_num) {
 
 // ввод записи с клавиатуры
 void Student::addStudent() {
-	getSurname();
-	getName();
-	getPatronymic();
-	getBirthDate();
-	getAdmissionYear();
-	getFaculty();
-	getDepartment();
-	getGroup();
-	getStudentbookNumber();
-	getSex();
-	getSession();	
+	setSurname();
+	setName();
+	setPatronymic();
+	setBirthDate();
+	setAdmissionYear();
+	setFaculty();
+	setDepartment();
+	setGroup();
+	setStudentbookNumber();
+	setSex();
+	setSession();
+	setMean();
 	writeIntoFile(fio, birth_date, admission_year, faculty, department, group, studentbook_number, sex, session);
 	cout << "Данные успешно записаны в файл \"StudentsData.txt\"\n";
 	cout << "Для продолжения нажмите любую клавишу. . .";
@@ -468,6 +497,7 @@ void Student::readFromFile(int requirement_number) {
 				f_line++;
 			}
 			else if (buffer == end_record) {
+				setMean();
 				student_number++;
 				f_line = 0;
 			}
@@ -540,34 +570,35 @@ void Student::editStudent(Student* student, int student_count) {
 
 		switch (parameter) {
 		case 1:
-			student[requred_student].getSurname();
+			student[requred_student].setSurname();
 			break;
 		case 2:
-			student[requred_student].getName();
+			student[requred_student].setName();
 			break;
 		case 3:
-			student[requred_student].getBirthDate();
+			student[requred_student].setBirthDate();
 			break;
 		case 5:
-			student[requred_student].getAdmissionYear();
+			student[requred_student].setAdmissionYear();
 			break;
 		case 6:
-			student[requred_student].getFaculty();
+			student[requred_student].setFaculty();
 			break;
 		case 7:
-			student[requred_student].getDepartment();
+			student[requred_student].setDepartment();
 			break;
 		case 8:
-			student[requred_student].getGroup();
+			student[requred_student].setGroup();
 			break;
 		case 9:
-			student[requred_student].getStudentbookNumber();
+			student[requred_student].setStudentbookNumber();
 			break;
 		case 10:
-			student[requred_student].getSex();
+			student[requred_student].setSex();
 			break;
 		case 11:
 			student[requred_student].editStudentSession(requred_student);
+			setMean();
 			break;
 		default:
 			cout << "Произошла непредвиденная ошибка!";
@@ -604,7 +635,7 @@ void Student::editStudentSession(int required_student) {
 
 	// добавить новую запись
 	if (choose == 1) {
-		getSession();
+		setSession();
 	}
 
 	else if (choose == 2) {
@@ -659,6 +690,7 @@ void Student::editStudentSession(int required_student) {
 	}
 }
 
+// удаление предмета сессии
 void Student::deleteSession(int required_student) {
 	int session_num, subject_num, num_subj_in_session;
 	printStudent(required_student);
