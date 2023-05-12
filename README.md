@@ -27,11 +27,21 @@
 
     ![пример выполнения варианта](https://github.com/medwuu/course-work/assets/91782808/b5878a20-f428-48da-91d6-9cd24433133d)
     </details>
+- шифрование файла через OpenSSL
+    <details>
+    <summary>перед запуском запуском...</summary>
+
+    - [скачайте установщие программы OpenSSL](https://slproweb.com/products/Win32OpenSSL.html) обязательно(!) версии __1.1.1t light__
+    - запустите его и укажите в качестве пути установки путь до проекта
+    - в параметре 
+    ```"Copy OpenSSL DLLs to:"``` укажите ```"The OpenSLL binaries (/bin) directory"```
+    - перейдите в папку с проектом и переименуйте папку ```"OpenSSL-Win64"``` в ```"openssl"```
+    </details>
+
 ---
 ### Пример вывода данных:
 ![пример вывода](https://github.com/medwuu/course-work/assets/91782808/1405e2f1-2c2a-4520-8470-63215f9881d9)
 
 ---
 ### TODO:
-- добавить шифрование файла
 - провести чистку кода (вряд ли буду делать, потому что умру)

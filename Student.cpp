@@ -9,6 +9,7 @@
 
 #include "Functions.h"
 #include "Student.h"
+#include "Crypto.h"
 
 #define line cout << "+"; for (int _ = 0; _ < 100; _++) { if (_ == 35) {cout << "+";} else {cout << "-";}} cout << "+\n"
 
@@ -17,6 +18,7 @@ using namespace std;
 // обозначает конец записи в файле
 string end_record = "=== END ===";
 
+// конструктор по умолчанию. заполняем объект класса пустыми (или почти) значениями
 Student::Student() {
 	fio.surname = fio.name = fio.patronymic = faculty.faculty = department.department = group.group = studentbook_number.student_book_number = sex.sex = "";
 	birth_date.day = birth_date.month = birth_date.year = admission_year.admission_year = -1;
@@ -30,6 +32,7 @@ Student::Student() {
 	}
 }
 
+// эта и далее функции, начинающиеся с "set" – сеттеры. они присваивают значения private полям класса
 void Student::setSurname() {
 	cout << "Введите фамилию: ";
 	string out = getAlpha("Введите фамилию: ");
@@ -239,6 +242,7 @@ void Student::setMean() {
 	session.mean = float(sum) / total_subject_num;
 }
 
+// с "get" начинаются "геттеры" – функции, позволяющие получить данные из private полей класса
 int Student::getAdmissionYear() {
 	return admission_year.admission_year;
 }
@@ -386,8 +390,9 @@ void Student::printStudent(int student_num) {
 void Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admission_year_, Faculty faculty_,
 						   Department department_, Group group_, StudentBookNumber studentbook_number_,
 						   Sex sex_, Session session_) {
+	// расшифровываем файл
+	Decrypt();
 	ofstream file("StudentsData.txt", ios_base::app);
-	// TODO: обрабатывать эту ошибку
 	if (!file.is_open()) {
 		cout << "Файл не открыт!";
 		_getch();
@@ -420,6 +425,8 @@ void Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admis
 	}
 	file << end_record << "\n";
 	file.close();
+	// шифруем файл
+	Crypt();
 }
 
 
@@ -428,6 +435,7 @@ void Student::readFromFile(int requirement_number) {
 	int student_number = 0, session_num;
 	string buffer;
 	int f_line = 0;
+	Decrypt();
 	ifstream file("StudentsData.txt", ios_base::out);
 	if (!file.is_open()) {
 		cout << "Файл не открыт!\n";
@@ -437,7 +445,7 @@ void Student::readFromFile(int requirement_number) {
 		while (getline(file, buffer, '\n')) {
 			// в файл записываются неиницализированные значения. этот блок просто не читает их
 			// костыли? ну а что поделать. так и живём		||		кроме шуток, я 2 дня пытался пофиксить эту ошибку, поэтому даже такое решение меня устраивает
-			if (buffer[0] == ':' && buffer[1] == '-') {}
+			if (buffer[0] == ':' && buffer[1] == '-') { continue; }
 			else if (student_number == requirement_number && buffer != end_record) {
 				switch (f_line) {
 				case 0:
@@ -503,6 +511,7 @@ void Student::readFromFile(int requirement_number) {
 			}
 		}
 		file.close();
+		Crypt();
 	}
 }
 
@@ -525,8 +534,10 @@ int Student::deleteStudent(Student* student, int student_count) {
 		system("cls");
 
 		// очищаем файл перед записью всех "сдвинутых" значений
+		Decrypt();
 		ofstream file("StudentsData.txt", ios_base::trunc);
 		file.close();
+		Crypt();
 		for (int i = 0; i < student_count; i++) {
 			if (i != number) {
 				writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
@@ -605,8 +616,10 @@ void Student::editStudent(Student* student, int student_count) {
 		}
 
 		// очищаем файл перед записью всех "сдвинутых" значений
+		Decrypt();
 		ofstream file("StudentsData.txt", ios_base::trunc);
 		file.close();
+		Crypt();
 		for (int i = 0; i < student_count; i++) {
 			writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
 		}
@@ -689,6 +702,7 @@ void Student::editStudentSession(int required_student) {
 		deleteSession(required_student);
 	}
 }
+
 
 // удаление предмета сессии
 void Student::deleteSession(int required_student) {

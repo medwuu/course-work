@@ -8,7 +8,7 @@
 #include <conio.h>
 
 #include "Functions.h"
-#include "Student.h"
+#include "Crypto.h"
 
 using namespace std;
 
@@ -16,6 +16,7 @@ using namespace std;
 int getAmountOfStudents() {
 	string buffer;
 	int count = 0;
+	Decrypt();
 	ifstream file("StudentsData.txt", ios_base::out);
 	if (!file.is_open()) {
 		cout << "Файл не открыт!\n";
@@ -26,6 +27,8 @@ int getAmountOfStudents() {
 			count++;
 		}
 	}
+	file.close();
+	Crypt();
 	return count;
 }
 
@@ -91,7 +94,7 @@ int getDigit(string whatToEnter) {
 	return atoi(output.c_str());
 }
 
-
+// пузырьковая сортировка. используется для выполнения задания в task()
 void bubbleSort(Student* student, int* &arr, int len)
 {
 	while (len--) {
@@ -154,8 +157,11 @@ void task(Student* student) {
 	bubbleSort(student, unsuitable, us_len);
 	
 	// выводим отсортированный список студентов
-	cout << "Вот они: сверху вниз, студенты, поступившие в " << required_admission_year << " году:\n";
-	for (int i = 0; i < s_len; i++) { student[suitable[i]].printStudent(i); }
+	if (!s_len) { cout << "Нет студентов, поступивших в " << required_admission_year << " году!\n"; }
+	else {
+		cout << "Вот они: сверху вниз, студенты, поступившие в " << required_admission_year << " году:\n";
+		for (int i = 0; i < s_len; i++) { student[suitable[i]].printStudent(i); }
+	}
 	cout << "\n";
 	cout << "А вот студенты, поступившие в другие года:\n";
 	for (int i = 0; i < us_len; i++) { student[unsuitable[i]].printStudent(i); }

@@ -59,7 +59,7 @@ struct Session {
 };
 
 
-
+// класс, студента. там прописаны прототипы функций для работы с ним
 class Student {
 private:
 	Fio fio;
