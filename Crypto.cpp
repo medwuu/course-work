@@ -2,13 +2,15 @@
 Файл с функциями шифрования и дешифрования файла StudentsData.txt
 */
 
-// !!!    названия файлов: "StudentsData.txt" заменяете на название своей БД    !!!
+#include <iostream> // ввод-вывод
+#include <string> // для операций со стринга́ми
+#include <time.h> // для генерации случайного числа с зависимостью от времени
+#include <fstream> // чтение-запись из/в файл
+
+// !!!    для корректной работы именно вашей программы, замените "StudentsData.txt" (ниже) на название своей БД    !!!
 // после проделанных действий программа при первом запуске выведет пару ошибок в консоль, а при дальнейших запусках не будет
-#include <iostream>
-#include <windows.h>
-#include <string>
-#include <time.h>
-#include <fstream>
+#define FILENAME "StudentsData.txt"
+
 using namespace std;
 
 // зашифровать файл
@@ -26,16 +28,19 @@ void Crypt() {
 			break;
 		case 2:
 			pass[i] = rand() % 26 + 'a';
+			break;
 		}
 	}
 	pass[64] = '\0';
 	// шифруем базу данных с помощью сгенерированного пароля
-	string command = "openssl\\bin\\openssl.exe enc -aes-256-cbc -salt -in StudentsData.txt -out StudentsData.txt.enc -pass pass:\"";
+	string command = "openssl\\bin\\openssl.exe enc -aes-256-cbc -salt -in ";
+	command += FILENAME;
+	command += " -out StudentsData.txt.enc -pass pass:\"";
 	command += pass;
 	command += "\" -pbkdf2";
 	system(command.c_str());
 	// удаляем незашифрованный файл
-	if (remove("StudentsData.txt") != 0) {
+	if (remove(FILENAME) != 0) {
 		cout << "[ERROR] - deleting database.txt" << endl;
 	}
 	// открываем и записываем в key.txt сгенерированный ключ, которым шифровали базу данных
@@ -73,12 +78,16 @@ void Decrypt() {
 		cout << "[ERROR] - deleting key.txt" << endl;
 	}
 	// расшифровываем базу данных
-	command = "openssl\\bin\\openssl.exe enc -aes-256-cbc -d -in StudentsData.txt.enc -out StudentsData.txt -pass pass:\"";
+	command = "openssl\\bin\\openssl.exe enc -aes-256-cbc -d -in ";
+	command += FILENAME;
+	command += ".enc -out StudentsData.txt -pass pass:\"";
 	command += pass;
 	command += "\" -pbkdf2";
 	system(command.c_str());
 	// удаляем зашифрованную базу данных
-	if (remove("StudentsData.txt.enc") != 0) {
+	string to_delete = FILENAME;
+	to_delete += ".enc";
+	if (remove(to_delete.c_str()) != 0) {
 		cout << "[ERROR] - deleting database.txt.enc" << endl;
 	}
 }

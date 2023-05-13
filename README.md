@@ -45,3 +45,6 @@
 ---
 ### TODO:
 - провести чистку кода (вряд ли буду делать, потому что умру)
+
+### Примечания:
+- для просмотра диаграммы классов (```ClassDiagram.cd```), необходимо [установить расширение для Visual Studio](https://learn.microsoft.com/ru-ru/visualstudio/ide/class-designer/how-to-add-class-diagrams-to-projects?view=vs-2022)

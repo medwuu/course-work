@@ -8,6 +8,7 @@
 
 using namespace std;
 
+// указатель на следующий элемент в списке
 struct Node {
 	string data;
 	struct Node* next;

@@ -2,16 +2,14 @@
 Файл с функциями класса Student
 */
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <conio.h>
+#include <iostream> // ввод-вывод
+#include <fstream> // чтение-запись из/в файл
+#include <string> // для операций со стринга́ми
+#include <conio.h> // для _getch()
 
 #include "Functions.h"
 #include "Student.h"
 #include "Crypto.h"
-
-#define line cout << "+"; for (int _ = 0; _ < 100; _++) { if (_ == 35) {cout << "+";} else {cout << "-";}} cout << "+\n"
 
 using namespace std;
 
@@ -62,36 +60,24 @@ void Student::setBirthDate() {
 	while (true) {
 		cout << "Введите дату рождения (число от 1 до 31): ";
 		out_day = getDigit("Введите дату рождения (число от 1 до 31): ");
-		cout << "\n";
-		// пусть пока будет 31 день
-		if (checkForValue(1, out_day, 31)) {
-			break;
-		}
 		system("cls");
+		// пусть пока будет 31 день
+		if (checkForValue(1, out_day, 31)) { break; }
 	}
-	system("cls");
 
 	while (true) {
 		cout << "Введите месяц рождения (число от 1 до 12): ";
 		out_month = getDigit("Введите месяц рождения (число от 1 до 12): ");
-		cout << "\n";
-		if (checkForValue(1, out_month, 12)) {
-			break;
-		}
 		system("cls");
+		if (checkForValue(1, out_month, 12)) { break; }
 	}
-	system("cls");
 
 	while (true) {
 		cout << "Введите год рождения (число от 1900 до 2005): ";
 		out_year = getDigit("Введите год рождения (число от 1900 до 2005): ");
-		cout << "\n";
-		if (checkForValue(1900, out_year, 2005)) {
-			break;
-		}
 		system("cls");
+		if (checkForValue(1900, out_year, 2005)) { break; }
 	}
-	system("cls");
 
 	birth_date.day = out_day;
 	birth_date.month = out_month;
@@ -103,13 +89,9 @@ void Student::setAdmissionYear() {
 	while (true) {
 		cout << "Введите год поступления (число от 1900 до 2022): ";
 		out = getDigit("Введите год поступления (число от 1900 до 2022): ");
-		cout << "\n";
-		if (checkForValue(1900, out, 2022)) {
-			break;
-		}
 		system("cls");
+		if (checkForValue(1900, out, 2022)) { break; }
 	}
-	system("cls");
 	admission_year.admission_year = out;
 }
 
@@ -149,15 +131,13 @@ void Student::setSex() {
 	while (true) {
 		cout << "Введите пол (1 – мужской, 0 – женский): ";
 		out = getDigit("Введите пол (1 – мужской, 0 – женский): ");
-		cout << "\n";
 		if (checkForValue(0, out, 1)) {
+			system("cls");
 			if (out == 1) {
-				system("cls");
 				sex.sex = "мужской";
 				break;
 			}
 			else {
-				system("cls");
 				sex.sex = "женский";
 				break;
 			}
@@ -174,10 +154,7 @@ void Student::setSession() {
 		cout << "Введите номер сессии (число от 1 до 9) или \"0\" чтобы пропустить: ";
 		while (true) {
 			session_num = getDigit("Введите номер сессии (число от 1 до 9) или \"0\" чтобы пропустить: ");
-			cout << "\n";
-			if (checkForValue(0, session_num, 9)) {
-				break;
-			}
+			if (checkForValue(0, session_num, 9)) { break; }
 		}
 		// while с условием не получался :с
 		if (session_num == 0) { break; }
@@ -190,21 +167,18 @@ void Student::setSession() {
 		system("cls");
 		// ввод оценки или зачёт/незачёт
 		while (true) {
-			cout << "Теперь введите оценку для предмета.\n" <<
-				"0-незачёт\n" <<
-				"1-зачёт\n" <<
-				"2-неудовлетворительно\n" <<
-				"3-удовлетворительно\n" <<
-				"4-хорошо\n" <<
-				"5-отлично\n\n" <<
+			cout << "Теперь введите оценку для предмета" << endl <<
+				"0-незачёт" << endl <<
+				"1-зачёт" << endl <<
+				"2-неудовлетворительно" << endl <<
+				"3-удовлетворительно" << endl <<
+				"4-хорошо" << endl <<
+				"5-отлично" << endl << endl <<
 				"Ваш выбор: ";
 			out_mark = getDigit("Теперь введите оценку для предмета.\n0-незачёт\n1-зачёт\n2-неудовлетворительно\n3-удовлетворительно\n4-хорошо\n5-отлично\n\nВаш выбор: ");
-			cout << "\n";
-			if (checkForValue(0, out_mark, 5)) {
-				break;
-			}
+			if (checkForValue(0, out_mark, 5)) { break; }
 		}
-		cout << "\n";
+		cout << endl;
 		// проверка на то, какой предмет будет по номеру
 		int subject_num = getEmptySessionNumber(session_num);
 		if (subject_num == -1) {
@@ -215,7 +189,7 @@ void Student::setSession() {
 			session.subject[session_num][subject_num] = out_subject;
 			session.mark[session_num][subject_num] = out_mark;
 			session.is_empty[session_num][subject_num] = false;
-			cout << "Сессия успешно добавлена!\nДля продолжения нажмите любую клавишу. . .";
+			cout << "Сессия успешно добавлена!" << endl << "Для продолжения нажмите любую клавишу. . .";
 			_getch();
 			system("cls");
 		}
@@ -241,6 +215,7 @@ void Student::setMean() {
 	}
 	session.mean = float(sum) / total_subject_num;
 }
+
 
 // с "get" начинаются "геттеры" – функции, позволяющие получить данные из private полей класса
 int Student::getAdmissionYear() {
@@ -277,22 +252,33 @@ void Student::addStudent() {
 	setSession();
 	setMean();
 	writeIntoFile(fio, birth_date, admission_year, faculty, department, group, studentbook_number, sex, session);
-	cout << "Данные успешно записаны в файл \"StudentsData.txt\"\n";
+	cout << "Данные успешно записаны в файл \"StudentsData.txt\"" << endl;
 	cout << "Для продолжения нажмите любую клавишу. . .";
 	_getch();
 	system("cls");
 }
 
 
+// рисует визуальный разделитель в таблице
+void line() {
+	cout << "+";
+	for (int _ = 0; _ < 101; _++) {
+		if (_ == 35) { cout << "+"; }
+		else { cout << "-"; }
+	}
+	cout << "+" << endl;
+}
+
+
 // вывод данных о студентах
 void Student::printStudent(int student_num) {
-	line;
+	line();
 	cout << left << "| " << student_num + 1;
 	cout.width(30);
 	cout << ".\t1. ФИО: ";
 	cout << "|\t" << fio.surname << " " << fio.name << " " << fio.patronymic;
 	cout.width(63 - fio.surname.length() - fio.name.length() - fio.patronymic.length() - 2);
-	cout << right << "|\n";
+	cout << right << "|" << endl;
 	cout.width(30);
 	cout << left << "|\t2. Дата рождения: ";
 	cout << "|\t";
@@ -305,38 +291,38 @@ void Student::printStudent(int student_num) {
 	}
 	cout << birth_date.month << "." << birth_date.year;
 	cout.width(63 - 10);
-	cout << right << "|\n";
+	cout << right << "|" << endl;
 	cout.width(30);
 	cout << left << "|\t3. Год поступления: ";
 	cout << "|\t" << admission_year.admission_year;
 	cout.width(63 - 4);
-	cout << right << "|\n";
+	cout << right << "|" << endl;
 	cout.width(30);
 	cout << left << "|\t4. Факультет (институт): ";
 	cout << "|\t" << faculty.faculty;
 	cout.width(63 - faculty.faculty.length());
-	cout << right << "|\n";
+	cout << right << "|" << endl;
 	cout.width(30);
 	cout << left << "|\t5. Кафедра: ";
 	cout << "|\t" << department.department;
 	cout.width(63 - department.department.length());
-	cout << right << "|\n";
+	cout << right << "|" << endl;
 	cout.width(30);
 	cout << left << "|\t6. Группа: ";
 	cout << "|\t" << group.group;
 	cout.width(63 - group.group.length());
-	cout << right << "|\n";
+	cout << right << "|" << endl;
 	cout.width(30);
 	cout << left << "|\t7. Номер зачётной книжки: ";
 	cout << "|\t" << studentbook_number.student_book_number;
 	cout.width(63 - studentbook_number.student_book_number.length());
-	cout << right << "|\n";
+	cout << right << "|" << endl;
 	cout.width(30);
 	cout << left << "|\t8. Пол: ";
 	cout << "|\t" << sex.sex;
 	cout.width(63 - sex.sex.length());
-	cout << right << "|\n";
-	line;
+	cout << right << "|" << endl;
+	line();
 	cout.width(30);
 	cout << left << "|\t9. Результаты сессий: ";
 	cout << "|\t";
@@ -367,7 +353,7 @@ void Student::printStudent(int student_num) {
 						cout << session.mark[session_num][subject_num];
 						cout.width(63 - 10 - session.subject[session_num][subject_num].length() - 3 - 1);
 					}
-					cout << right << "|\n";
+					cout << right << "|" << endl;
 
 				}
 				// пустая запись (закончились)
@@ -378,11 +364,11 @@ void Student::printStudent(int student_num) {
 		else {
 			cout << "нет данных";
 			cout.width(63 - 20);
-			cout << right << "|\n";
+			cout << right << "|" << endl;
 		}
 	}
-	line;
-	cout << "\n\n";
+	line();
+	cout << endl << endl;
 }
 
 
@@ -438,7 +424,7 @@ void Student::readFromFile(int requirement_number) {
 	Decrypt();
 	ifstream file("StudentsData.txt", ios_base::out);
 	if (!file.is_open()) {
-		cout << "Файл не открыт!\n";
+		cout << "Файл не открыт!" << endl;
 		return;
 	}
 	else {
@@ -520,12 +506,13 @@ void Student::readFromFile(int requirement_number) {
 int Student::deleteStudent(Student* student, int student_count) {
 	int number;
 	if (student_count == 0) {
-		cout << "Пока не кого отчислять :(\n";
+		cout << "Пока не кого отчислять :(" << endl;
 	}
 	else {
 		while (true) {
 			cout << "Введите порядковый номер (на рукаве) студента: ";
-			cin >> number;
+			number = getDigit("Введите порядковый номер (на рукаве) студента: ");
+			system("cls");
 			if (checkForValue(1, number, student_count)) {
 				number--;
 				break;
@@ -543,7 +530,7 @@ int Student::deleteStudent(Student* student, int student_count) {
 				writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
 			}
 		}
-		cout << "Данные успешно обновлены!\n";
+		cout << "Данные успешно обновлены!" << endl;
 	}
 	cout << "Для продолжения нажмите любую клавишу...";
 	_getch();
@@ -554,16 +541,13 @@ int Student::deleteStudent(Student* student, int student_count) {
 
 // изменение данных студента
 void Student::editStudent(Student* student, int student_count) {
-	if (student_count == 0) { cout << "Тут что-то пусто. Для начала, добавьте студентов\n"; }
+	if (student_count == 0) { cout << "Тут что-то пусто. Для начала, добавьте студентов" << endl; }
 	else {
 		int requred_student, parameter;
 		while (true) {
 			cout << "Введите порядковый номер (на рукаве) студента, данные которого хотите изменить: ";
 			requred_student = getDigit("Введите порядковый номер (на рукаве) студента, данные которого хотите изменить: ");
-			cout << "\n";
-			if (checkForValue(1, requred_student, student_count)) {
-				break;
-			}
+			if (checkForValue(1, requred_student, student_count)) {	break; }
 		}
 		// уменьшаем на 1, потому что работаем с индексами
 		requred_student--;
@@ -572,10 +556,7 @@ void Student::editStudent(Student* student, int student_count) {
 		while (true) {
 			cout << "Теперь введите номер параметра, который хотите изменить.\nПодсказка:\n1-фамилия\n2-имя\n3-отчество\n4-дата рождения\n5-год поступления\n6-факультет\n7-кафедра\n8-группа\n9-номер зачётной книжки\n10-пол\n11-данные о сессии\n\nВаш выбор: ";
 			parameter = getDigit("Теперь введите номер параметра, который хотите изменить.\nПодсказка:\n1-фамилия\n2-имя\n3-отчество\n4-дата рождения\n5-год поступления\n6-факультет\n7-кафедра\n8-группа\n9-номер зачётной книжки\n10-пол\n11-данные о сессии\n\nВаш выбор: ");
-			cout << "\n";
-			if (checkForValue(1, parameter, 11)) {
-				break;
-			}
+			if (checkForValue(1, parameter, 11)) { break; }
 		}
 		system("cls");
 
@@ -587,6 +568,9 @@ void Student::editStudent(Student* student, int student_count) {
 			student[requred_student].setName();
 			break;
 		case 3:
+			student[requred_student].setPatronymic();
+			break;
+		case 4:
 			student[requred_student].setBirthDate();
 			break;
 		case 5:
@@ -623,7 +607,7 @@ void Student::editStudent(Student* student, int student_count) {
 		for (int i = 0; i < student_count; i++) {
 			writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
 		}
-		cout << "Данные успешно обновлены!\n";
+		cout << "Данные успешно обновлены!" << endl;
 	}
 	cout << "Для продолжения нажмите любую клавишу...";
 	_getch();
@@ -631,18 +615,19 @@ void Student::editStudent(Student* student, int student_count) {
 }
 
 
-// изменение сессии студента и удаление
+// изменение и переход к удалению сессии студента
 void Student::editStudentSession(int required_student) {
 	int choose, session_num, subject_num, num_subj_in_session, new_mark;
 	string new_subject;
 	printStudent(required_student);
-	cout << "Введите:\n\"1\", чтобы добавить новую запись\n\"2\", чтобы изменить существующую запись\n\"3\", чтобы удалить существующую запись\n\nВаш выбор : ";
+	cout << "Введите:" << endl <<
+		"\"1\", чтобы добавить новую запись" << endl <<
+		"\"2\", чтобы изменить существующую запись" << endl <<
+		"\"3\", чтобы удалить существующую запись" << endl << endl <<
+		"Ваш выбор: ";
 	while (true) {
-		choose = getDigit("Введите:\n\"1\", чтобы добавить новую запись\n\"2\", чтобы изменить существующую запись\n\"3\", чтобы удалить существующую запись\n\nВаш выбор : ");
-		cout << "\n";
-		if (checkForValue(1, choose, 3)) {
-			break;
-		}
+		choose = getDigit("Введите:\n\"1\", чтобы добавить новую запись\n\"2\", чтобы изменить существующую запись\n\"3\", чтобы удалить существующую запись\n\nВаш выбор: ");
+		if (checkForValue(1, choose, 3)) { break; }
 	}
 	system("cls");
 
@@ -651,13 +636,13 @@ void Student::editStudentSession(int required_student) {
 		setSession();
 	}
 
+	// изменить существующую запись
 	else if (choose == 2) {
 		// получаем номер сессии
 		printStudent(required_student);
 		cout << "Введите номер сессии, данные которой вы хотите изменить: ";
 		while (true) {
 			session_num = getDigit("Введите номер сессии, данные которой вы хотите изменить: ");
-			cout << "\n";
 			if (checkForValue(1, session_num, 9)) {
 				num_subj_in_session = getEmptySessionNumber(session_num - 1);
 				if (num_subj_in_session == 0) { cout << "В этой сессии нет предметов для изменения. Воспользуйтесь функцией добавления новой записи!"; }
@@ -671,10 +656,7 @@ void Student::editStudentSession(int required_student) {
 		cout << "Теперь введите номер предмета, данные которого хотите изменить: ";
 		while (true) {
 			subject_num = getDigit("Теперь введите номер предмета, данные которого хотите изменить: ");
-			cout << "\n";
-			if (checkForValue(1, subject_num, num_subj_in_session)) {
-				break;
-			}
+			if (checkForValue(1, subject_num, num_subj_in_session)) { break; }
 		}
 		system("cls");
 
@@ -683,13 +665,17 @@ void Student::editStudentSession(int required_student) {
 		cin >> new_subject;
 
 		// получаем  новую оценку
-		cout << "Теперь введите оценку для предмета.\n0 - незачёт\n1 - зачёт\n2 - неудовлетворительно\n3 - удовлетворительно\n4 - хорошо\n5 - отлично\n\nВаш выбор : ";
+		cout << "Теперь введите оценку для предмета." << endl <<
+			"0 - незачёт" << endl <<
+			"1 - зачёт" << endl <<
+			"2 - неудовлетворительно" << endl <<
+			"3 - удовлетворительно" << endl <<
+			"4 - хорошо" << endl <<
+			"5 - отлично" << endl << endl <<
+			"Ваш выбор : ";
 		while (true) {
 			new_mark = getDigit("Теперь введите оценку для предмета.\n0-незачёт\n1-зачёт\n2-неудовлетворительно\n3-удовлетворительно\n4-хорошо\n5-отлично\n\nВаш выбор: ");
-			cout << "\n";
-			if (checkForValue(0, new_mark, 5)) {
-				break;
-			}
+			if (checkForValue(0, new_mark, 5)) { break;	}
 		}
 
 		// заменяем значения в элементе класса
@@ -704,14 +690,13 @@ void Student::editStudentSession(int required_student) {
 }
 
 
-// удаление предмета сессии
+// удаление сессии
 void Student::deleteSession(int required_student) {
 	int session_num, subject_num, num_subj_in_session;
 	printStudent(required_student);
 	cout << "Введите номер сессии, данные которой вы хотите удалить: ";
 	while (true) {
 		session_num = getDigit("Введите номер сессии, данные которой вы хотите удалить: ");
-		cout << "\n";
 		if (checkForValue(1, session_num, 9)) {
 			num_subj_in_session = getEmptySessionNumber(session_num - 1);
 			if (num_subj_in_session == 0) { cout << "В этой сессии нет предметов для удаления. Воспользуйтесь функцией добавления новой записи!"; }
@@ -724,10 +709,7 @@ void Student::deleteSession(int required_student) {
 	cout << "Теперь введите номер предмета, данные которого хотите удалить: ";
 	while (true) {
 		subject_num = getDigit("Теперь введите номер предмета, данные которого хотите удалить: ");
-		cout << "\n";
-		if (checkForValue(1, subject_num, num_subj_in_session)) {
-			break;
-		}
+		if (checkForValue(1, subject_num, num_subj_in_session)) { break; }
 	}
 	system("cls");
 

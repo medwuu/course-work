@@ -2,11 +2,12 @@
 Файл с дополнительными функциями
 */
 
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <conio.h>
+#include <iostream> // ввод-вывод
+#include <string> // для операций со стринга́ми
+#include <fstream> // чтение-запись из/в файл
+#include <conio.h> // для _getch()
 
+#include "MainMenu.h"
 #include "Functions.h"
 #include "Crypto.h"
 
@@ -30,6 +31,37 @@ int getAmountOfStudents() {
 	file.close();
 	Crypt();
 	return count;
+}
+
+// инициализируем записи о студентах из файла
+void initStudent(Student* student, int student_count) {
+	cout << "Подождите, идёт дешифрование файла . . .";
+	for (int i = 0; i < student_count; i++) {
+		student[i].readFromFile(i);
+	}
+	// очищаем, то, что написали в начале getAmountOfStudents()
+	system("cls");
+}
+
+// вызов и выбор действия в главном меню (динамический массив || класс список)
+int mainMenu() {
+	// переменная, в которую записывается, что делать (из главного меню)
+	int action;
+	MainMenu* main_menu = new MainMenu("Главное меню:");
+	main_menu->push_back("Добавить запись");
+	main_menu->push_back("Вывод данных");
+	main_menu->push_back("Изменение данных");
+	main_menu->push_back("Удалить запись");
+	main_menu->push_back("Выполнить 24 вариант");
+	main_menu->push_back("Выход\n");
+	main_menu->push_back("Выберите действие (число от 1 до 6): ");
+	while (true) {
+		main_menu->printItem();
+		cin >> action;
+		system("cls");
+		if (checkForValue(1, action, 6)) { break; }
+	}
+	return action;
 }
 
 // проверяем, попадает ли введённое значение в нужный диапазон
@@ -69,6 +101,7 @@ string getAlpha(string whatToEnter) {
 		}
 		cout << whatToEnter << output;
 	}
+	cout << endl;
 	return output;
 }
 
@@ -91,6 +124,7 @@ int getDigit(string whatToEnter) {
 		}
 		cout << whatToEnter << output;
 	}
+	cout << endl;
 	return atoi(output.c_str());
 }
 
@@ -159,7 +193,7 @@ void task(Student* student) {
 	// выводим отсортированный список студентов
 	if (!s_len) { cout << "Нет студентов, поступивших в " << required_admission_year << " году!\n"; }
 	else {
-		cout << "Вот они: сверху вниз, студенты, поступившие в " << required_admission_year << " году:\n";
+		cout << "Вот они сверху вниз по убыванию среднего балла: студенты, поступившие в " << required_admission_year << " году:\n";
 		for (int i = 0; i < s_len; i++) { student[suitable[i]].printStudent(i); }
 	}
 	cout << "\n";

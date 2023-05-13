@@ -2,39 +2,14 @@
 Основной файл курсовой работы
 */
 
-#include <iostream>
-#include <Windows.h>
-#include <conio.h>
+#include <iostream> // ввод-вывод
+#include <Windows.h> // локализация ввода-вывода
+#include <conio.h> // для _getch()
 
-#include "MainMenu.h"
 #include "Functions.h"
 #include "Student.h"
 
 using namespace std;
-
-// переменная, в которую записывается, что делать (из главного меню)
-int action;
-
-// вызов и выбор действия в главном меню
-void mainMenu() {
-	MainMenu* main_menu = new MainMenu("Главное меню:");
-	main_menu->push_back("Добавить запись");
-	main_menu->push_back("Вывод данных");
-	main_menu->push_back("Изменение данных");
-	main_menu->push_back("Удалить запись");
-	main_menu->push_back("Выполнить 24 вариант");
-	main_menu->push_back("Выход\n");
-	main_menu->push_back("Выберите действие (число от 1 до 6): ");
-	main_menu->printItem();
-	cin >> action;
-	system("cls");
-	if (!checkForValue(1, action, 6)) {
-		mainMenu();
-	}
-}
-
-
-
 
 
 int main() {
@@ -46,13 +21,10 @@ int main() {
 	// создаём динамический массив
 	Student* student = new Student[student_count];
 
-	// инициализируем значения
-	for (int i = 0; i < student_count; i++) {
-		student[i].readFromFile(i);
-	}
+	initStudent(student, student_count);
 
 	while (true) {
-		mainMenu();
+		int action = mainMenu();
 		switch (action)	{
 		case 1: {
 			// создаём новый динамический массив, отличный от прошлого на +1
@@ -102,8 +74,8 @@ int main() {
 			task(student);
 			break;
 		case 6:
-			cout << "Конец работы программы\n\n";
-			// эта строка не играет роли, но для better coding'а я следую правилу "написал new – освободи память"
+			cout << "Конец работы программы" << endl << endl;
+			// эти строки не играют роли, но для better coding'а я следую правилу "написал new – освободи память"
 			delete[] student;
 			student = nullptr;
 			return 0;
