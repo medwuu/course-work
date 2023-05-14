@@ -14,6 +14,8 @@ int mainMenu();
 
 bool checkForValue(int min, int value, int max);
 
+bool checkForValue(std::string value, int max);
+
 std::string getAlpha(std::string whatToEnter);
 
 int getDigit(std::string whatToEnter);

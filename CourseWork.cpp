@@ -55,19 +55,22 @@ int main() {
 			// флаг, показывающий, был ли индекс элемента, который необходимо удалить
 			bool flag = false;
 			int num_to_delete = student->deleteStudent(student, student_count);
-			Student* new_student = new Student[student_count - 1];
-			for (int i = 0; i < student_count; i++) {
-				if (i == num_to_delete) { flag = true; }
-				else if (!flag) {
-					new_student[i] = student[i];
+			// deleteStudent возвращает "-1", если нет людей для отчисления
+			if (num_to_delete != -1) {
+				Student* new_student = new Student[student_count - 1];
+				for (int i = 0; i < student_count; i++) {
+					if (i == num_to_delete) { flag = true; }
+					else if (!flag) {
+						new_student[i] = student[i];
+					}
+					else if (flag) {
+						new_student[i - 1] = student[i];
+					}
 				}
-				else if (flag) {
-					new_student[i - 1] = student[i];
-				}
+				delete[] student;
+				student = new_student;
+				student_count--;
 			}
-			delete[] student;
-			student = new_student;
-			student_count--;
 		}
 		break;
 		case 5:

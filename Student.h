@@ -20,7 +20,7 @@ struct AdmissionYear {
 	int admission_year;
 };
 
-// факультет
+// факультет (институт)
 struct Faculty {
 	string faculty;
 };
@@ -93,8 +93,8 @@ public:
 	void addStudent();
 	void printStudent(int student_num);
 	void writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admission_year_, Faculty faculty_,
-					  Department department_, Group group_, StudentBookNumber studentbook_number_,
-					  Sex sex_, Session session_);
+					   Department department_, Group group_, StudentBookNumber studentbook_number_,
+					   Sex sex_, Session session_);
 	void readFromFile(int required_number);
 	void editStudent(Student* student, int student_count);
 	void editStudentSession(int required_student);

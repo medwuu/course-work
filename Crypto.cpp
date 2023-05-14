@@ -7,8 +7,11 @@
 #include <time.h> // для генерации случайного числа с зависимостью от времени
 #include <fstream> // чтение-запись из/в файл
 
-// !!!    для корректной работы именно вашей программы, замените "StudentsData.txt" (ниже) на название своей БД    !!!
-// после проделанных действий программа при первом запуске выведет пару ошибок в консоль, а при дальнейших запусках не будет
+/*
+!!!для корректной работы именно вашей программы, замените "StudentsData.txt" (ниже)на название своей БД    !!!
+ после проделанных действий программа при первом запуске выведет пару ошибок в консоль, а при дальнейших запусках не будет
+ */
+
 #define FILENAME "StudentsData.txt"
 
 using namespace std;
@@ -35,13 +38,15 @@ void Crypt() {
 	// шифруем базу данных с помощью сгенерированного пароля
 	string command = "openssl\\bin\\openssl.exe enc -aes-256-cbc -salt -in ";
 	command += FILENAME;
-	command += " -out StudentsData.txt.enc -pass pass:\"";
+	command += " -out ";
+	command += FILENAME;
+	command += ".enc -pass pass:\"";
 	command += pass;
 	command += "\" -pbkdf2";
 	system(command.c_str());
 	// удаляем незашифрованный файл
 	if (remove(FILENAME) != 0) {
-		cout << "[ERROR] - deleting database.txt" << endl;
+		cout << "[ERROR] - deleting " << FILENAME << endl;
 	}
 	// открываем и записываем в key.txt сгенерированный ключ, которым шифровали базу данных
 	ofstream file;
@@ -80,7 +85,9 @@ void Decrypt() {
 	// расшифровываем базу данных
 	command = "openssl\\bin\\openssl.exe enc -aes-256-cbc -d -in ";
 	command += FILENAME;
-	command += ".enc -out StudentsData.txt -pass pass:\"";
+	command += ".enc -out ";
+	command += FILENAME;
+	command += " -pass pass:\"";
 	command += pass;
 	command += "\" -pbkdf2";
 	system(command.c_str());
@@ -88,6 +95,6 @@ void Decrypt() {
 	string to_delete = FILENAME;
 	to_delete += ".enc";
 	if (remove(to_delete.c_str()) != 0) {
-		cout << "[ERROR] - deleting database.txt.enc" << endl;
+		cout << "[ERROR] - deleting " << FILENAME << ".enc" << endl;
 	}
 }

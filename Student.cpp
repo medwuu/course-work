@@ -32,23 +32,35 @@ Student::Student() {
 
 // эта и далее функции, начинающиеся с "set" – сеттеры. они присваивают значения private полям класса
 void Student::setSurname() {
-	cout << "Введите фамилию: ";
-	string out = getAlpha("Введите фамилию: ");
-	system("cls");
+	string out;
+	while (true) {
+		cout << "Введите фамилию: ";
+		out = getAlpha("Введите фамилию: ");
+		system("cls");
+		if (checkForValue(out, 20)) { break; }
+	}
 	fio.surname = out;
 }
 
 void Student::setName() {
-	cout << "Введите имя: ";
-	string out = getAlpha("Введите имя: ");
-	system("cls");
+	string out;
+	while (true) {
+		cout << "Введите имя: ";
+		out = getAlpha("Введите имя: ");
+		system("cls");
+		if (checkForValue(out, 20)) { break; }
+	}
 	fio.name = out;
 }
 
 void Student::setPatronymic() {
-	cout << "Введите отчество: ";
-	string out = getAlpha("Введите отчество: ");
-	system("cls");
+	string out;
+	while (true) {
+		cout << "Введите отчество: ";
+		string out = getAlpha("Введите отчество: ");
+		system("cls");
+		if (checkForValue(out, 20)) { break; }
+	}
 	fio.patronymic = out;
 }
 
@@ -96,33 +108,46 @@ void Student::setAdmissionYear() {
 }
 
 void Student::setFaculty() {
-	cout << "Введите факультет: ";
-	string out = getAlpha("Введите факультет: ");
-	system("cls");
+	string out;
+	while (true) {
+		cout << "Введите факультет (институт): ";
+		string out = getAlpha("Введите факультет (институт): ");
+		system("cls");
+		if (checkForValue(out, 60)) { break; }
+	}
 	faculty.faculty = out;
 }
 
 void Student::setDepartment() {
 	string out;
-	cout << "Введите кафедру: ";
-	cin >> out;
-	system("cls");
+	while (true) {
+		cout << "Введите кафедру: ";
+		cin >> out;
+		system("cls");
+		if (checkForValue(out, 60)) { break; }
+	}
 	department.department = out;
 }
 
 void Student::setGroup() {
 	string out;
-	cout << "Введите группу: ";
-	cin >> out;
-	system("cls");
+	while (true) {
+		cout << "Введите группу: ";
+		cin >> out;
+		system("cls");
+		if (checkForValue(out, 60)) { break; }
+	}
 	group.group = out;
 }
 
 void Student::setStudentbookNumber() {
 	string out;
-	cout << "Введите номер зачётной книжки: ";
-	cin >> out;
-	system("cls");
+	while (true) {
+		cout << "Введите номер зачётной книжки: ";
+		cin >> out;
+		system("cls");
+		if (checkForValue(out, 60)) { break; }
+	}
 	studentbook_number.student_book_number = out;
 }
 
@@ -167,7 +192,7 @@ void Student::setSession() {
 		system("cls");
 		// ввод оценки или зачёт/незачёт
 		while (true) {
-			cout << "Теперь введите оценку для предмета" << endl <<
+			cout << "Теперь введите оценку для предмета:" << endl <<
 				"0-незачёт" << endl <<
 				"1-зачёт" << endl <<
 				"2-неудовлетворительно" << endl <<
@@ -175,7 +200,7 @@ void Student::setSession() {
 				"4-хорошо" << endl <<
 				"5-отлично" << endl << endl <<
 				"Ваш выбор: ";
-			out_mark = getDigit("Теперь введите оценку для предмета.\n0-незачёт\n1-зачёт\n2-неудовлетворительно\n3-удовлетворительно\n4-хорошо\n5-отлично\n\nВаш выбор: ");
+			out_mark = getDigit("Теперь введите оценку для предмета:\n0-незачёт\n1-зачёт\n2-неудовлетворительно\n3-удовлетворительно\n4-хорошо\n5-отлично\n\nВаш выбор: ");
 			if (checkForValue(0, out_mark, 5)) { break; }
 		}
 		cout << endl;
@@ -444,16 +469,16 @@ void Student::readFromFile(int requirement_number) {
 					fio.patronymic = buffer;
 					break;
 				case 3:
-					birth_date.day = atoi(buffer.c_str());
+					birth_date.day = stoi(buffer);
 					break;
 				case 4:
-					birth_date.month = atoi(buffer.c_str());
+					birth_date.month = stoi(buffer);
 					break;
 				case 5:
-					birth_date.year = atoi(buffer.c_str());
+					birth_date.year = stoi(buffer);
 					break;
 				case 6:
-					admission_year.admission_year = atoi(buffer.c_str());
+					admission_year.admission_year = stoi(buffer);
 					break;
 				case 7:
 					faculty.faculty = buffer;
@@ -473,7 +498,7 @@ void Student::readFromFile(int requirement_number) {
 				// тут был геймплей отладчика на 2000 лет
 				default:
 					// означает, что мы попали на строку, которая определяет номер сессии
-					if (buffer.length() == 1) { session_num = atoi(buffer.c_str()); }
+					if (buffer.length() == 1) { session_num = stoi(buffer); }
 					else {
 						int subject_num = getEmptySessionNumber(session_num);
 						bool was_colon = false;
@@ -506,6 +531,7 @@ void Student::readFromFile(int requirement_number) {
 int Student::deleteStudent(Student* student, int student_count) {
 	int number;
 	if (student_count == 0) {
+		number = -1;
 		cout << "Пока не кого отчислять :(" << endl;
 	}
 	else {

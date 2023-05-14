@@ -362,3 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /openssl
+/StudentsData.txt.enc
+/key.txt.enc
+rsa.public
+rsa.private

@@ -72,8 +72,23 @@ bool checkForValue(int min, int value, int max) {
 	else {
 		// звук ошибки windows
 		cout << "\a";
-		cout << "Введено неверное значение (" << value << ")! Введите число от " << min << " до " << max << "\n";
-		cout << "Для продолжения нажмите любую клавишу...";
+		cout << "Введено неверное значение (" << value << ")! Введите число от " << min << " до " << max << endl;
+		cout << "Для продолжения нажмите любую клавишу . . .";
+		_getch();
+		system("cls");
+		return false;
+	}
+}
+
+// перегружаем функцию для проверки того, что строка не более max символов. это надо, чтобы нельзя неправильным input'ом поломать таблицу
+bool checkForValue(string value, int max) {
+	if (0 < value.length() && value.length() <= max) {
+		return true;
+	}
+	else {
+		cout << "\a";
+		cout << "Неправильная длина ввода (" << value.length() << ")! Ввод должен быть не пустым и содержать не более " << max << " символов" << endl;
+		cout << "Для продолжения нажмите любую клавишу . . .";
 		_getch();
 		system("cls");
 		return false;
@@ -89,16 +104,12 @@ string getAlpha(string whatToEnter) {
 		// проверка на соответствие введённого символа большим или маленькими буквами английского, а затем русского алфавита
 		if ((65 <= letter && letter <= 90) || (97 <= letter && letter <= 122) || (-200 <= letter && letter <= -1)) {
 			output += letter;
-			system("cls");
 		}
 		// удаление при нажатии backspace
 		else if (letter == 8 && output.length() != 0) {
 			output.pop_back();
-			system("cls");
 		}
-		else {
-			system("cls");
-		}
+		system("cls");
 		cout << whatToEnter << output;
 	}
 	cout << endl;
@@ -113,19 +124,15 @@ int getDigit(string whatToEnter) {
 		letter = _getch();
 		if (48 <= letter && letter <= 57) {
 			output += letter;
-			system("cls");
 		}
 		else if (letter == 8 && output.length() != 0) {
 			output.pop_back();
-			system("cls");
 		}
-		else {
-			system("cls");
-		}
+		system("cls");
 		cout << whatToEnter << output;
 	}
 	cout << endl;
-	return atoi(output.c_str());
+	return stoi(output);
 }
 
 // пузырьковая сортировка. используется для выполнения задания в task()
@@ -154,14 +161,12 @@ void task(Student* student) {
 	while (true) {
 		required_admission_year = getDigit("Введите год поступления для сортировки: ");
 		cout << "\n";
-		if (checkForValue(1900, required_admission_year, 2022)) {
-			break;
-		}
+		if (checkForValue(1900, required_admission_year, 2022)) { break; }
 	}
 	system("cls");
 
-	// создаём 2 динамических массива с индексами элементов, у которых год поступления совпадает или нет с тем, который ввёл пользователь
 	int s_len = 0, us_len = 0, student_count = getAmountOfStudents();
+	// создаём 2 динамических массива с индексами элементов, у которых год поступления совпадает или нет с тем, который ввёл пользователь
 	int* suitable = new int;
 	int* unsuitable = new int;
 	for (int i = 0; i < student_count; i++) {
