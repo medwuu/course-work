@@ -57,7 +57,7 @@ void Student::setPatronymic() {
 	string out;
 	while (true) {
 		cout << "Введите отчество: ";
-		string out = getAlpha("Введите отчество: ");
+		out = getAlpha("Введите отчество: ");
 		system("cls");
 		if (checkForValue(out, 20)) { break; }
 	}
@@ -111,7 +111,7 @@ void Student::setFaculty() {
 	string out;
 	while (true) {
 		cout << "Введите факультет (институт): ";
-		string out = getAlpha("Введите факультет (институт): ");
+		out = getAlpha("Введите факультет (институт): ");
 		system("cls");
 		if (checkForValue(out, 60)) { break; }
 	}
@@ -188,7 +188,8 @@ void Student::setSession() {
 		system("cls");
 		// ввод названия предмета
 		cout << "Введите название предмета: ";
-		cin >> out_subject;
+		cin.ignore();
+		getline(cin, out_subject);
 		system("cls");
 		// ввод оценки или зачёт/незачёт
 		while (true) {
@@ -254,9 +255,7 @@ float Student::getMean() {
 // узнать, сколько предметов записано в одной сессии
 int Student::getEmptySessionNumber(int session_num) {
 	for (int i = 0; i < 10; i++) {
-		if (session.is_empty[session_num][i]) {
-			return i;
-		}
+		if (session.is_empty[session_num][i]) { return i; }
 	}
 	return -1;
 }
@@ -294,6 +293,11 @@ void line() {
 	cout << "+" << endl;
 }
 
+
+// компактный вывод студентов (ФИО, номер группы)
+void Student::printCompact(int student_num) {
+	cout << left << student_num + 1 << ". " << fio.surname << " " << fio.name << " " << fio.patronymic << " " << group.group << endl;
+}
 
 // вывод данных о студентах
 void Student::printStudent(int student_num) {
@@ -536,6 +540,11 @@ int Student::deleteStudent(Student* student, int student_count) {
 	}
 	else {
 		while (true) {
+			// выводим компактно студентов для более лёгкой ориетации в программе
+			for (int i = 0; i < student_count; i++) {
+				student[i].printCompact(i);
+			}
+			cout << endl;
 			cout << "Введите порядковый номер (на рукаве) студента: ";
 			number = getDigit("Введите порядковый номер (на рукаве) студента: ");
 			system("cls");
@@ -546,6 +555,7 @@ int Student::deleteStudent(Student* student, int student_count) {
 		}
 		system("cls");
 
+		cout << "Подождите, идёт запись данных в файл . . .";
 		// очищаем файл перед записью всех "сдвинутых" значений
 		Decrypt();
 		ofstream file("StudentsData.txt", ios_base::trunc);
@@ -556,6 +566,7 @@ int Student::deleteStudent(Student* student, int student_count) {
 				writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
 			}
 		}
+		system("cls");
 		cout << "Данные успешно обновлены!" << endl;
 	}
 	cout << "Для продолжения нажмите любую клавишу...";
@@ -571,6 +582,10 @@ void Student::editStudent(Student* student, int student_count) {
 	else {
 		int requred_student, parameter;
 		while (true) {
+			for (int i = 0; i < student_count; i++) {
+				student[i].printCompact(i);
+			}
+			cout << endl;
 			cout << "Введите порядковый номер (на рукаве) студента, данные которого хотите изменить: ";
 			requred_student = getDigit("Введите порядковый номер (на рукаве) студента, данные которого хотите изменить: ");
 			if (checkForValue(1, requred_student, student_count)) {	break; }
@@ -625,6 +640,7 @@ void Student::editStudent(Student* student, int student_count) {
 			cout << "Произошла непредвиденная ошибка!";
 		}
 
+		cout << "Подождите, идёт запись данных в файл . . .";
 		// очищаем файл перед записью всех "сдвинутых" значений
 		Decrypt();
 		ofstream file("StudentsData.txt", ios_base::trunc);
@@ -633,6 +649,7 @@ void Student::editStudent(Student* student, int student_count) {
 		for (int i = 0; i < student_count; i++) {
 			writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
 		}
+		system("cls");
 		cout << "Данные успешно обновлены!" << endl;
 	}
 	cout << "Для продолжения нажмите любую клавишу...";

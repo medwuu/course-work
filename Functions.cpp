@@ -148,8 +148,7 @@ void bubbleSort(Student* student, int* &arr, int len)
 			}
 		}
 		// если уже всё отсортировано
-		if (swapped == false)
-			break;
+		if (!swapped) { break; }
 	}
 }
 
@@ -199,11 +198,12 @@ void task(Student* student) {
 	if (!s_len) { cout << "Нет студентов, поступивших в " << required_admission_year << " году!\n"; }
 	else {
 		cout << "Вот они сверху вниз по убыванию среднего балла: студенты, поступившие в " << required_admission_year << " году:\n";
-		for (int i = 0; i < s_len; i++) { student[suitable[i]].printStudent(i); }
+		for (int i = 0; i < s_len; i++) { student[suitable[i]].printCompact(i); }
 	}
 	cout << "\n";
 	cout << "А вот студенты, поступившие в другие года:\n";
-	for (int i = 0; i < us_len; i++) { student[unsuitable[i]].printStudent(i); }
+	for (int i = 0; i < us_len; i++) { student[unsuitable[i]].printCompact(i); }
+	cout << endl;
 
 	// очищаем динамические массивы и их указатели
 	delete[] suitable; delete[] unsuitable;

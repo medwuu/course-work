@@ -91,6 +91,7 @@ public:
 	int getEmptySessionNumber(int session_num);
 
 	void addStudent();
+	void printCompact(int student_num);
 	void printStudent(int student_num);
 	void writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admission_year_, Faculty faculty_,
 					   Department department_, Group group_, StudentBookNumber studentbook_number_,
