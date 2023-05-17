@@ -86,6 +86,7 @@ public:
 	void setSession();
 	void setMean();
 
+	int getBirthYear();
 	int getAdmissionYear();
 	float getMean();
 	int getEmptySessionNumber(int session_num);

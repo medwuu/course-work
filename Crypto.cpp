@@ -7,9 +7,20 @@
 #include <time.h> // для генерации случайного числа с зависимостью от времени
 #include <fstream> // чтение-запись из/в файл
 
-/*
-!!!    для корректной работы именно вашей программы, замените "StudentsData.txt" (ниже) на название своей БД    !!!
+/*                                  !!!ИНСТРУКЦИЯ ПО ШИФРОВАНИЮ!!!
+для корректной работы именно вашей программы проделайте слудущие шаги:
+1. скачайте "Win64 OpenSSL v1.1.1t Light"(!) (https://slproweb.com/products/Win32OpenSSL.html)
+2. во время установки, в качестве пути установки выбрерите файл с проектом, а также на 3 странице установщика нажмите на
+	"The OpenSSL binaries (/bin) directory". далее просто кликаете "next" и ждёте окончания установки
+3. перейдите по пути "ваш_проект\OpenSSL-Win64\bin", откройте openssl.exe и вставьте туда последовательно(!) команды:
+	"genrsa -out rsa.private 4096",
+	"rsa -in rsa.private -pubout -out rsa.public".
+	после этого, можете закрыть консоль и никгода к ней не возвращаться
+4. замените "StudentsData.txt" (ниже) на название своей БД
+
  после проделанных действий программа при первом запуске выведет пару ошибок в консоль, а при дальнейших запусках не будет
+
+* не надо ничего переносить, переименовывать и т. д.    делайте это лишь в тех случаях, когда программа не работает корректно со 2 раза
  */
 #define FILENAME "StudentsData.txt"
 
@@ -35,7 +46,7 @@ void Crypt() {
 	}
 	pass[64] = '\0';
 	// шифруем базу данных с помощью сгенерированного пароля
-	string command = "openssl\\bin\\openssl.exe enc -aes-256-cbc -salt -in ";
+	string command = "OpenSSL-Win64\\bin\\openssl.exe enc -aes-256-cbc -salt -in ";
 	command += FILENAME;
 	command += " -out ";
 	command += FILENAME;
@@ -53,7 +64,7 @@ void Crypt() {
 	file.write(pass, 65);
 	file.close();
 	// шифруем key.txt с помощью ключа "rsa.public"
-	command = "openssl\\bin\\openssl.exe rsautl -encrypt -inkey rsa.public -pubin -in key.txt -out key.txt.enc";
+	command = "OpenSSL-Win64\\bin\\openssl.exe rsautl -encrypt -inkey OpenSSL-Win64\\bin\\rsa.public -pubin -in key.txt -out key.txt.enc";
 	system(command.c_str());
 	// удаляем незашифрованный файл
 	if (remove("key.txt") != 0) {
@@ -64,7 +75,7 @@ void Crypt() {
 // расшифровать файл
 void Decrypt() {
 	// расшифровываем файл key.txt с помощью "rsa.private"
-	string command = "openssl\\bin\\openssl.exe rsautl -decrypt -inkey rsa.private -in key.txt.enc -out key.txt";
+	string command = "OpenSSL-Win64\\bin\\openssl.exe rsautl -decrypt -inkey OpenSSL-Win64\\bin\\rsa.private -in key.txt.enc -out key.txt";
 	system(command.c_str());
 	// удаляем зашифрованный файл
 	if (remove("key.txt.enc") != 0) {
@@ -82,7 +93,7 @@ void Decrypt() {
 		cout << "[ERROR] - deleting key.txt" << endl;
 	}
 	// расшифровываем базу данных
-	command = "openssl\\bin\\openssl.exe enc -aes-256-cbc -d -in ";
+	command = "OpenSSL-Win64\\bin\\openssl.exe enc -aes-256-cbc -d -in ";
 	command += FILENAME;
 	command += ".enc -out ";
 	command += FILENAME;

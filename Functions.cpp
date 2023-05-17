@@ -17,6 +17,7 @@ using namespace std;
 int getAmountOfStudents() {
 	string buffer;
 	int count = 0;
+	cout << "Подождите, идёт дешифрование файла . . ." << endl;
 	Decrypt();
 	ifstream file("StudentsData.txt", ios_base::out);
 	if (!file.is_open()) {
@@ -35,10 +36,11 @@ int getAmountOfStudents() {
 
 // инициализируем записи о студентах из файла
 void initStudent(Student* student, int student_count) {
-	cout << "Подождите, идёт дешифрование файла . . .";
+	Decrypt();
 	for (int i = 0; i < student_count; i++) {
 		student[i].readFromFile(i);
 	}
+	Crypt();
 	// очищаем, то, что написали в начале getAmountOfStudents()
 	system("cls");
 }
@@ -96,7 +98,7 @@ bool checkForValue(string value, int max) {
 }
 
 // "умный" ввод только текста
-string getAlpha(string whatToEnter) {
+string getAlpha(string what_to_enter) {
 	string output = "";
 	char letter = 0;
 	while (letter != 13) {
@@ -110,14 +112,14 @@ string getAlpha(string whatToEnter) {
 			output.pop_back();
 		}
 		system("cls");
-		cout << whatToEnter << output;
+		cout << what_to_enter << output;
 	}
 	cout << endl;
 	return output;
 }
 
 // "умный" ввод только цифр
-int getDigit(string whatToEnter) {
+int getDigit(string what_to_enter) {
 	string output = "";
 	char letter = 0;
 	while (letter != 13) {
@@ -129,7 +131,7 @@ int getDigit(string whatToEnter) {
 			output.pop_back();
 		}
 		system("cls");
-		cout << whatToEnter << output;
+		cout << what_to_enter << output;
 	}
 	cout << endl;
 	return stoi(output);
@@ -160,11 +162,13 @@ void task(Student* student) {
 	while (true) {
 		required_admission_year = getDigit("Введите год поступления для сортировки: ");
 		cout << "\n";
-		if (checkForValue(1900, required_admission_year, 2022)) { break; }
+		if (checkForValue(1913, required_admission_year, 2022)) { break; }
 	}
 	system("cls");
 
 	int s_len = 0, us_len = 0, student_count = getAmountOfStudents();
+	// очистка сообщения из getAmountOfStudents()
+	system("cls");
 	// создаём 2 динамических массива с индексами элементов, у которых год поступления совпадает или нет с тем, который ввёл пользователь
 	int* suitable = new int;
 	int* unsuitable = new int;

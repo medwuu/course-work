@@ -85,8 +85,9 @@ void Student::setBirthDate() {
 	}
 
 	while (true) {
-		cout << "Введите год рождения (число от 1900 до 2005): ";
-		out_year = getDigit("Введите год рождения (число от 1900 до 2005): ");
+		// в 13 лет нельзя ведь в ВУЗ поступить. по крайней мере, в МИРЭА (:
+		cout << "Введите год рождения (число от 1900 до 2010): ";
+		out_year = getDigit("Введите год рождения (число от 1900 до 2010): ");
 		system("cls");
 		if (checkForValue(1900, out_year, 2005)) { break; }
 	}
@@ -99,10 +100,12 @@ void Student::setBirthDate() {
 void Student::setAdmissionYear() {
 	int out;
 	while (true) {
-		cout << "Введите год поступления (число от 1900 до 2022): ";
-		out = getDigit("Введите год поступления (число от 1900 до 2022): ");
+		string set = "Введите год поступления (число от " + to_string(getBirthYear()) + " до 2022): ";
+		cout << set;
+		out = getDigit(set);
 		system("cls");
-		if (checkForValue(1900, out, 2022)) { break; }
+		// младше 14 не поступают :<
+		if (checkForValue(getBirthYear() + 13, out, 2022)) { break; }
 	}
 	admission_year.admission_year = out;
 }
@@ -181,7 +184,7 @@ void Student::setSession() {
 			session_num = getDigit("Введите номер сессии (число от 1 до 9) или \"0\" чтобы пропустить: ");
 			if (checkForValue(0, session_num, 9)) { break; }
 		}
-		// while с условием не получался :с
+		// пользователь вводит "0" – (больше) не хочет добавлять
 		if (session_num == 0) { break; }
 		// потому что индексы
 		session_num--;
@@ -244,6 +247,10 @@ void Student::setMean() {
 
 
 // с "get" начинаются "геттеры" – функции, позволяющие получить данные из private полей класса
+int Student::getBirthYear() {
+	return birth_date.year;
+}
+
 int Student::getAdmissionYear() {
 	return admission_year.admission_year;
 }
@@ -275,7 +282,9 @@ void Student::addStudent() {
 	setSex();
 	setSession();
 	setMean();
+	Decrypt();
 	writeIntoFile(fio, birth_date, admission_year, faculty, department, group, studentbook_number, sex, session);
+	Crypt();
 	cout << "Данные успешно записаны в файл \"StudentsData.txt\"" << endl;
 	cout << "Для продолжения нажмите любую клавишу. . .";
 	_getch();
@@ -405,8 +414,6 @@ void Student::printStudent(int student_num) {
 void Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admission_year_, Faculty faculty_,
 						   Department department_, Group group_, StudentBookNumber studentbook_number_,
 						   Sex sex_, Session session_) {
-	// расшифровываем файл
-	Decrypt();
 	ofstream file("StudentsData.txt", ios_base::app);
 	if (!file.is_open()) {
 		cout << "Файл не открыт!";
@@ -440,8 +447,6 @@ void Student::writeIntoFile(Fio fio_, BirthDate birth_date_, AdmissionYear admis
 	}
 	file << end_record << "\n";
 	file.close();
-	// шифруем файл
-	Crypt();
 }
 
 
@@ -450,7 +455,6 @@ void Student::readFromFile(int requirement_number) {
 	int student_number = 0, session_num;
 	string buffer;
 	int f_line = 0;
-	Decrypt();
 	ifstream file("StudentsData.txt", ios_base::out);
 	if (!file.is_open()) {
 		cout << "Файл не открыт!" << endl;
@@ -526,7 +530,6 @@ void Student::readFromFile(int requirement_number) {
 			}
 		}
 		file.close();
-		Crypt();
 	}
 }
 
@@ -560,12 +563,12 @@ int Student::deleteStudent(Student* student, int student_count) {
 		Decrypt();
 		ofstream file("StudentsData.txt", ios_base::trunc);
 		file.close();
-		Crypt();
 		for (int i = 0; i < student_count; i++) {
 			if (i != number) {
 				writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
 			}
 		}
+		Crypt();
 		system("cls");
 		cout << "Данные успешно обновлены!" << endl;
 	}
@@ -645,10 +648,10 @@ void Student::editStudent(Student* student, int student_count) {
 		Decrypt();
 		ofstream file("StudentsData.txt", ios_base::trunc);
 		file.close();
-		Crypt();
 		for (int i = 0; i < student_count; i++) {
 			writeIntoFile(student[i].fio, student[i].birth_date, student[i].admission_year, student[i].faculty, student[i].department, student[i].group, student[i].studentbook_number, student[i].sex, student[i].session);
 		}
+		Crypt();
 		system("cls");
 		cout << "Данные успешно обновлены!" << endl;
 	}
